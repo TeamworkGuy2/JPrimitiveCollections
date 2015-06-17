@@ -21,6 +21,9 @@ public interface CharListReadOnly extends java.util.RandomAccess {
 	public char get(int index);
 
 
+	public char getLast();
+
+
 	/** Check if the specified values is contained in this list of chars
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise

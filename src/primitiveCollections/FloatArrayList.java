@@ -100,6 +100,13 @@ public class FloatArrayList implements FloatList, RandomAccess, Iterable<Float> 
 	}
 
 
+	@Override
+	public float getLast() {
+		if(size < 1) { throw new ArrayIndexOutOfBoundsException(size - 1); }
+		return data[size - 1];
+	}
+
+
 	/** Check if the specified values is contained in this list of Floats
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise

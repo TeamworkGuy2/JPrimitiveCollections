@@ -86,11 +86,20 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 
 	@Override
 	public double get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		double obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public double getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

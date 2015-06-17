@@ -21,6 +21,9 @@ public interface FloatListReadOnly extends java.util.RandomAccess {
 	public float get(int index);
 
 
+	public float getLast();
+
+
 	/** Check if the specified values is contained in this list of floats
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise

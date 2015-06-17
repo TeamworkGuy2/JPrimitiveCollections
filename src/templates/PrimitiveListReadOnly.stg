@@ -22,6 +22,9 @@ public interface $var.className$ extends $var.implementClassNames:{x | $x$}; sep
 	public $var.type$ get(int index);
 
 
+	public $var.type$ getLast();
+
+
 	/** Check if the specified values is contained in this list of $var.type$s
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise

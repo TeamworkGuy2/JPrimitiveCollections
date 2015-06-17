@@ -86,11 +86,20 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 
 	@Override
 	public char get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		char obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public char getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

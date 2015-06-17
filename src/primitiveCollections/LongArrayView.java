@@ -86,11 +86,20 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 
 	@Override
 	public long get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		long obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public long getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

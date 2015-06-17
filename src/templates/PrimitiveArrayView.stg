@@ -87,11 +87,20 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 
 	@Override
 	public $var.type$ get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		$var.type$ obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public $var.type$ getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

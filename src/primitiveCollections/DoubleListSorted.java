@@ -65,6 +65,13 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
+	@Override
+	public double getLast() {
+		if(size < 1) { throw new ArrayIndexOutOfBoundsException(size - 1); }
+		return data[size - 1];
+	}
+
+
 	/** Get the index of the specified value in this sorted list if it exists
 	 * @param value the value to search for in this list
 	 * @return the index of the value if it ins contained in this list, else return -1

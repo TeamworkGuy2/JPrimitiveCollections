@@ -21,6 +21,9 @@ public interface IntListReadOnly extends java.util.RandomAccess {
 	public int get(int index);
 
 
+	public int getLast();
+
+
 	/** Check if the specified values is contained in this list of ints
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise

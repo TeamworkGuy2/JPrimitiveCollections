@@ -86,11 +86,20 @@ public final class IntArrayView implements IntList, java.util.RandomAccess, Iter
 
 	@Override
 	public int get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		int obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public int getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

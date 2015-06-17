@@ -86,11 +86,20 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 
 	@Override
 	public float get(int index) {
-		if(off + index > len) {
+		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
 		float obj = objs[off + index];
 		return obj;
+	}
+
+
+	@Override
+	public float getLast() {
+		if(len < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		return objs[off + len - 1];
 	}
 
 

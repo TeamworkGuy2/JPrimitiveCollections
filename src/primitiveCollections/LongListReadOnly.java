@@ -21,6 +21,9 @@ public interface LongListReadOnly extends java.util.RandomAccess {
 	public long get(int index);
 
 
+	public long getLast();
+
+
 	/** Check if the specified values is contained in this list of longs
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
