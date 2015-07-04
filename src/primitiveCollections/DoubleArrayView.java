@@ -213,23 +213,33 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 
 	@Override
 	public String toString() {
-		int modCached = mod;
 		StringBuilder strB = new StringBuilder();
-		strB.append('[');
-		if(len > 0) {
-			int count = off + len - 1;
-			for(int i = off; i < count; i++) {
-				strB.append(objs[i]);
-				strB.append(", ");
+		toString(strB);
+		return strB.toString();
+	}
+
+
+@Override
+	public void toString(Appendable dst) {
+		int modCached = mod;
+		try {
+			dst.append('[');
+			if(len > 0) {
+				int count = off + len - 1;
+				for(int i = off; i < count; i++) {
+					dst.append(Double.toString(objs[i]));
+					dst.append(", ");
+				}
+				dst.append(Double.toString(objs[count]));
 			}
-			strB.append(objs[count]);
+			dst.append(']');
+		} catch(java.io.IOException ioe) {
+			throw new java.io.UncheckedIOException(ioe);
 		}
-		strB.append(']');
 
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return strB.toString();
 	}
 
 

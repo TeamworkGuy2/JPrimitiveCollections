@@ -57,4 +57,10 @@ public interface FloatList extends java.util.RandomAccess, FloatListReadOnly {
 	 */
 	public void clear();
 
+
+	/** invoke toString() and store the resulting string in an {@link Appendable} destination parameter.
+	 * NOTE: implementations SHOULD optimized this method to reduce StringBuilder garbage objects
+	 */
+	public void toString(Appendable dst);
+
 }

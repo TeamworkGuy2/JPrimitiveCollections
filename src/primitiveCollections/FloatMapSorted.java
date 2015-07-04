@@ -386,13 +386,13 @@ public class FloatMapSorted<T> implements FloatMapReadOnly<T>, RandomAccess {
 
 
 	@Override
-	public  iterator() {
-		return new (new (this));
+	public var.iteratorName iterator() {
+		return new var.iteratorName(new var.iteratorPrimitiveName(this));
 	}
 
 
-	public  iteratorPrimitive() {
-		return new (this);
+	public var.iteratorPrimitiveName iteratorPrimitive() {
+		return new var.iteratorPrimitiveName(this);
 	}*/
 
 

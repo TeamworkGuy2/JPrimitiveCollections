@@ -2,6 +2,7 @@ package primitiveCollections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.RandomAccess;
 
 /** A primitive float implementation of an {@link ArrayList}.<br>
@@ -60,14 +61,18 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	 */
 	@Override
 	public float get(int index) {
-		if(index < 0 || index >= size) { throw new ArrayIndexOutOfBoundsException(index); }
+		if(index < 0 || index >= size) {
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
+		}
 		return data[index];
 	}
 
 
 	@Override
 	public float getLast() {
-		if(size < 1) { throw new ArrayIndexOutOfBoundsException(size - 1); }
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
 		return data[size - 1];
 	}
 
@@ -95,26 +100,47 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	/** Remove the integer at the specified index
-	 * @param index the index between zero and {@link #size()}-1 inclusive to remove
-	 * @return the integer found at the specified index
+	public void getSubArray(int dataOff, float[] dstAry, int dstOff, int len) {
+		if(dataOff < 0 || dataOff + len > size) {
+			throw new ArrayIndexOutOfBoundsException((dataOff < 0 ? dataOff : dataOff + len) + " of [0, " + size + ")");
+		}
+		System.arraycopy(data, dataOff, dstAry, dstOff, len);
+	}
+
+
+	/** Remove the float at the specified index
+	 * @param index the index between {@code [0, }{@link #size()}{@code -1]} to remove
+	 * @return the float found at the specified index
+	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code -1]}
 	 */
 	@Override
 	public float remove(int index) {
 		if(index < 0 || index >= size) {
-			throw new ArrayIndexOutOfBoundsException(index);
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
 		}
 		// Shift all elements above the remove element to fill the empty index
 		// Get the item to remove
 		float item = data[index];
-		// Copy down the remaining upper half of the array if the item removed was not the last item in the array
-		if(index < size - 1) {
-			System.arraycopy(data, index + 1, data, index, size - index - 1);
+
+		removeRange(index, 1);
+
+		return item;
+	}
+
+
+	public void removeRange(int off, int len) {
+		if(off < 0 || off + len > size) {
+			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
 		}
 		mod++;
+		// Shift all elements above the remove element to fill the empty index
+		// Get the item to remove
+		// Copy down the remaining upper half of the array if the item removed was not the last item in the array
+		if(off + len < size) {
+			System.arraycopy(data, off + len, data, off, size - (off + len));
+		}
 		// Decrease the size because we removed one item
-		size--;
-		return item;
+		size -= len;
 	}
 
 
@@ -192,10 +218,37 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
+	/** Add a {@link Collection} of {@link Float} objects to this group of elements
+	 * @param items the collection of items
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 */
+	public boolean addAll(Collection<? extends Float> items) {
+		boolean res = true;
+		for(Float item : items) {
+			if(item != null) {
+				add(item);
+			}
+			res &= (item != null);
+		}
+		return res;
+	}
+
+
 	/** Clear the group of elements
 	 */
 	@Override
 	public void clear() {
+		clearFast();
+	}
+
+
+	public void clearFast() {
+		mod++;
+		size = 0;
+	}
+
+
+	public void clearFull() {
 		mod++;
 		// Clear list to null
 		for(int i = 0; i < size; i++) {
@@ -267,18 +320,27 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder(64);
-		builder.append('[');
-		if(size > 0) {
-			int sizeTemp = size - 1;
-			for(int i = 0; i < sizeTemp; i++) {
-				builder.append(data[i]);
-				builder.append(", ");
-			}
-			builder.append(data[sizeTemp]);
-		}
-		builder.append(']');
-
+		toString(builder);
 		return builder.toString();
+	}
+
+
+	@Override
+	public void toString(Appendable dst) {
+		try {
+			dst.append('[');
+			if(size > 0) {
+				int sizeTemp = size - 1;
+				for(int i = 0; i < sizeTemp; i++) {
+					dst.append(Float.toString(data[i]));
+					dst.append(", ");
+				}
+				dst.append(Float.toString(data[sizeTemp]));
+			}
+			dst.append(']');
+		} catch(java.io.IOException ioe) {
+			throw new java.io.UncheckedIOException(ioe);
+		}
 	}
 
 
@@ -306,6 +368,20 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	public static final FloatListSorted of(float... values) {
 		FloatListSorted inst = new FloatListSorted();
 		inst.addAll(values);
+		return inst;
+	}
+
+
+	public static final FloatListSorted of(Collection<? extends Float> values) {
+		return of(values, values.size());
+	}
+
+
+	public static final FloatListSorted of(Collection<? extends Float> values, int size) {
+		FloatListSorted inst = new FloatListSorted(size);
+		for(Float value : values) {
+			inst.add(value);
+		}
 		return inst;
 	}
 

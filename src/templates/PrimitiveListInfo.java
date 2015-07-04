@@ -3,13 +3,14 @@ package templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import codeTemplate.PrimitiveClassTemplate;
+import codeTemplate.ClassInfo;
+import codeTemplate.PrimitiveClassTemplateDeprecated;
 
 /**
  * @author TeamworkGuy2
  * @since 2014-12-24
  */
-public class PrimitiveListInfo extends PrimitiveClassTemplate {
+public class PrimitiveListInfo extends PrimitiveClassTemplateDeprecated {
 	/** the class name of the iterator class this primitive list uses */
 	public String iteratorName;
 	/** the class name of the primitive iterator class this primitive list uses */
@@ -32,8 +33,8 @@ public class PrimitiveListInfo extends PrimitiveClassTemplate {
 	}
 
 
-	public static final <T extends PrimitiveClassTemplate> T implementClasses(T classInfo, List<String> implementsClasses) {
-		classInfo.implementClassNames = new ArrayList<>(implementsClasses);
+	public static final <T extends ClassInfo> T implementClasses(T classInfo, List<String> implementsClasses) {
+		classInfo.setImplementClassNames(new ArrayList<>(implementsClasses));
 		return classInfo;
 	}
 

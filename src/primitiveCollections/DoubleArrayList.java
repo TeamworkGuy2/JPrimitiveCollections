@@ -95,14 +95,18 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 */
 	@Override
 	public double get(int index) {
-		if(index < 0 || index >= size) { throw new ArrayIndexOutOfBoundsException(index); }
+		if(index < 0 || index >= size) {
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
+		}
 		return data[index];
 	}
 
 
 	@Override
 	public double getLast() {
-		if(size < 1) { throw new ArrayIndexOutOfBoundsException(size - 1); }
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
 		return data[size - 1];
 	}
 
@@ -175,27 +179,47 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	public void getSubArray(int dataOff, double[] dstAry, int dstOff, int len) {
+		if(dataOff < 0 || dataOff + len > size) {
+			throw new ArrayIndexOutOfBoundsException((dataOff < 0 ? dataOff : dataOff + len) + " of [0, " + size + ")");
+		}
+		System.arraycopy(data, dataOff, dstAry, dstOff, len);
+	}
+
+
 	/** Remove the double at the specified index
-	 * @param index the index between {@code [0, }{@link #size()}{@code -1} to remove
+	 * @param index the index between {@code [0, }{@link #size()}{@code -1]} to remove
 	 * @return the double found at the specified index
 	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code -1]}
 	 */
 	@Override
 	public double remove(int index) {
 		if(index < 0 || index >= size) {
-			throw new ArrayIndexOutOfBoundsException(index);
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
+		}
+		// Shift all elements above the remove element to fill the empty index
+		// Get the item to remove
+		double item = data[index];
+
+		removeRange(index, 1);
+
+		return item;	
+	}
+
+
+	public void removeRange(int off, int len) {
+		if(off < 0 || off + len > size) {
+			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
 		}
 		mod++;
 		// Shift all elements above the remove element to fill the empty index
 		// Get the item to remove
-		double item = data[index];
 		// Copy down the remaining upper half of the array if the item removed was not the last item in the array
-		if(index < size - 1) {
-			System.arraycopy(data, index + 1, data, index, size - index - 1);
+		if(off + len < size) {
+			System.arraycopy(data, off + len, data, off, size - (off + len));
 		}
 		// Decrease the size because we removed one item
-		size--;
-		return item;
+		size -= len;
 	}
 
 
@@ -240,16 +264,18 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	/** Add the specified item to this list of elements
 	 * @param index the index at which to insert the value
 	 * @param value the value to add to this list of elements
-	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code ]}
+	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code )}
 	 */
 	public void add(int index, double value) {
-		if(index < 0 || index > size) { throw new ArrayIndexOutOfBoundsException(index); }
+		if(index < 0 || index > size) {
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
+		}
 		mod++;
 		// If the list is too small, expand it
 		if(size >= data.length) {
 			expandList();
 		}
-		System.arraycopy(data, index, data, index+1, size-index);
+		System.arraycopy(data, index, data, index + 1, size - index);
 		// Add the new item
 		data[index] = value;
 		size++;
@@ -283,10 +309,10 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
+
 		// Add the new items
-		for(int i = 0; i < len; i++) {
-			data[size + i] = items[i];
-		}
+		System.arraycopy(items, off, data, size, len);
+
 		size += len;
 	}
 
@@ -303,9 +329,9 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Add the specified sub array of items to this group of elements
-	 * @param items the array of items
-	 * @return true if the items are added successfully, false otherwise
+	/** Add a {@link Collection} of {@link Double} objects to this group of elements
+	 * @param items the collection of items
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
 	public boolean addAll(Collection<? extends Double> items) {
 		int len = items.size();
@@ -344,7 +370,9 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 * @throws ArrayIndexOutOfBoundsException if the index is not within the specified range
 	 */
 	public double set(int index, double value) {
-		if(index < 0 || index >= size) { throw new ArrayIndexOutOfBoundsException(index); }
+		if(index < 0 || index >= size) {
+			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
+		}
 		mod++;
 		double oldValue = data[index];
 		data[index] = value;
@@ -356,6 +384,17 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 */
 	@Override
 	public void clear() {
+		clearFast();
+	}
+
+
+	public void clearFast() {
+		mod++;
+		size = 0;
+	}
+
+
+	public void clearFull() {
 		mod++;
 		// Clear list to null
 		for(int i = 0; i < size; i++) {
@@ -397,6 +436,20 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	public List<Double> toList() {
+		List<Double> values = new ArrayList<>(this.size);
+		addToCollection(values);
+		return values;
+	}
+
+
+	public void addToCollection(Collection<Double> dst) {
+		for(int i = 0; i < this.size; i++) {
+			dst.add(this.data[i]);
+		}
+	}
+
+
 	@Override
 	public DoubleIteratorWrapper iterator() {
 		return new DoubleIteratorWrapper(new DoubleArrayListIterator(this));
@@ -427,18 +480,27 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder(64);
-		builder.append('[');
-		if(size > 0) {
-			int sizeTemp = size - 1;
-			for(int i = 0; i < sizeTemp; i++) {
-				builder.append(data[i]);
-				builder.append(", ");
-			}
-			builder.append(data[sizeTemp]);
-		}
-		builder.append(']');
-
+		toString(builder);
 		return builder.toString();
+	}
+
+
+	@Override
+	public void toString(Appendable dst) {
+		try {
+			dst.append('[');
+			if(size > 0) {
+				int sizeTemp = size - 1;
+				for(int i = 0; i < sizeTemp; i++) {
+					dst.append(Double.toString(data[i]));
+					dst.append(", ");
+				}
+				dst.append(Double.toString(data[sizeTemp]));
+			}
+			dst.append(']');
+		} catch(java.io.IOException ioe) {
+			throw new java.io.UncheckedIOException(ioe);
+		}
 	}
 
 
@@ -470,6 +532,23 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	public static final DoubleArrayList of(Collection<Double> values) {
+		return of(values, values.size());
+	}
+
+
+	public static final DoubleArrayList of(Collection<Double> values, int size) {
+		DoubleArrayList inst = newListOfDefaultValues(size);
+		double[] dat = inst.data;
+		int i = 0;
+		for(Double value : values) {
+			dat[i] = value;
+			i++;
+		}
+		return inst;
+	}
+
+
 	public static final DoubleArrayList newListOfDefaultValues(int length) {
 		DoubleArrayList inst = new DoubleArrayList(length);
 		inst.size = length;
@@ -482,6 +561,41 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 		inst.size = length;
 		Arrays.fill(inst.data, 0, length, defaultVal);
 		return inst;
+	}
+
+
+	public static final List<Double> toList(double[] values) {
+		return toList(values, 0, values.length);
+	}
+
+
+	public static final List<Double> toList(double[] values, int off, int len) {
+		List<Double> dst = new ArrayList<>(len);
+		addToCollection(values, off, len, dst);
+		return dst;
+	}
+
+
+	public static final void addToCollection(double[] values, int off, int len, Collection<Double> dst) {
+		for(int i = off, size = off + len; i < size; i++) {
+			dst.add(values[i]);
+		}
+	}
+
+
+	public static final double[] toArray(Collection<? extends Double> values) {
+		return toArray(values, values.size());
+	}
+
+
+	public static final double[] toArray(Collection<? extends Double> values, int size) {
+		double[] dst = new double[size];
+		int i = 0;
+		for(Double value : values) {
+			dst[i] = value;
+			i++;
+		}
+		return dst;
 	}
 
 

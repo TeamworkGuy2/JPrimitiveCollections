@@ -1,9 +1,11 @@
 package templates.generators;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import templates.MapInfo;
@@ -11,6 +13,7 @@ import templates.PrimitiveListInfo;
 import typeInfo.JavaPrimitives;
 import codeTemplate.ClassTemplate;
 import codeTemplate.PrimitiveClassTemplate;
+import codeTemplate.PrimitiveClassTemplateDeprecated;
 import codeTemplate.PrimitiveTemplates;
 import codeTemplate.TemplateRender;
 
@@ -22,8 +25,12 @@ public class GeneratePrimitiveCollections {
 	private static List<Class<?>> primitiveTypes = Arrays.asList(new Class<?>[] { Character.TYPE, Integer.TYPE, Float.TYPE, Long.TYPE, Double.TYPE });
 
 
-	private static <T extends PrimitiveClassTemplate> void genBasicPrimitiveTmpls(String templateFileName, String templateName, Function<Class<?>, T> supplier) {
-		TemplateRender.generatePrimitiveClassTemplates(templateFileName, templateName, primitiveTypes, supplier);
+	private static <T extends PrimitiveClassTemplateDeprecated> void genBasicPrimitiveTmpls(String templateFileName, String templateName, Function<Class<?>, T> supplier) {
+		TemplateRender.generatePrimitiveClassTemplates(templateFileName, templateName, primitiveTypes, (type) -> {
+			T tmpl = supplier.apply(type);
+			Map.Entry<PrimitiveClassTemplate, Object> entry = new AbstractMap.SimpleImmutableEntry<>(new PrimitiveClassTemplate(tmpl, tmpl), tmpl);
+			return entry;
+		});
 	}
 
 
@@ -40,7 +47,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = "primitiveCollections";
 
 		genBasicPrimitiveTmpls("src/templates/PrimitiveList.stg", "PrimitiveList", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveClassTemplate(), "$Type$List", pkgName).implement("$Type$ListReadOnly").getTemplate();
+			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveClassTemplateDeprecated(), "$Type$List", pkgName).implement("$Type$ListReadOnly").getTemplate();
 		});
 	}
 
@@ -116,7 +123,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = "primitiveCollections";
 
 		genBasicPrimitiveTmpls("src/templates/PrimitiveIteratorReadOnly.stg", "PrimitiveIteratorReadOnly", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new PrimitiveClassTemplate(type), "$Type$IteratorReadOnly", pkgName);
+			return PrimitiveTemplates.newPrimitiveTemplate(type, new PrimitiveClassTemplateDeprecated(type), "$Type$IteratorReadOnly", pkgName);
 		});
 	}
 
@@ -125,7 +132,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = "primitiveCollections";
 
 		genBasicPrimitiveTmpls("src/templates/PrimitiveIterator.stg", "PrimitiveIterator", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveClassTemplate(type), "$Type$Iterator", pkgName).implement("$Type$IteratorReadOnly").getTemplate();
+			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveClassTemplateDeprecated(type), "$Type$Iterator", pkgName).implement("$Type$IteratorReadOnly").getTemplate();
 		});
 	}
 
@@ -214,7 +221,7 @@ public class GeneratePrimitiveCollections {
 	}
 
 
-	public static class WrapperTemplateInfo extends PrimitiveClassTemplate {
+	public static class WrapperTemplateInfo extends PrimitiveClassTemplateDeprecated {
 		public String iteratorName;
 
 		public WrapperTemplateInfo(Class<?> primitiveType) {
@@ -225,7 +232,7 @@ public class GeneratePrimitiveCollections {
 	}
 
 
-	public static class MapTmplInfo extends PrimitiveClassTemplate {
+	public static class MapTmplInfo extends PrimitiveClassTemplateDeprecated {
 		public String valueType;
 		public String defaultValueValue;
 
@@ -262,7 +269,7 @@ public class GeneratePrimitiveCollections {
 	 * @author TeamworkGuy2
 	 * @since 2015-1-17
 	 */
-	public static class PrimitiveIteratorInfo extends PrimitiveClassTemplate {
+	public static class PrimitiveIteratorInfo extends PrimitiveClassTemplateDeprecated {
 		public String collectionType;
 		public String sizeGetter;
 		public String getterStart;

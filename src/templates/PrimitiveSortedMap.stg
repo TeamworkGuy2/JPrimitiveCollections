@@ -387,13 +387,13 @@ public class $var.className$<$var.valueTypeSignature$> implements $var.implement
 
 
 	@Override
-	public $var.iteratorName$ iterator() {
-		return new $var.iteratorName$(new $var.iteratorPrimitiveName$(this));
+	public var.iteratorName iterator() {
+		return new var.iteratorName(new var.iteratorPrimitiveName(this));
 	}
 
 
-	public $var.iteratorPrimitiveName$ iteratorPrimitive() {
-		return new $var.iteratorPrimitiveName$(this);
+	public var.iteratorPrimitiveName iteratorPrimitive() {
+		return new var.iteratorPrimitiveName(this);
 	}*/
 
 
