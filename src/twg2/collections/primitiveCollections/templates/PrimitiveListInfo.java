@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codeTemplate.ClassInfo;
-import codeTemplate.PrimitiveClassTemplateDeprecated;
+import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
 
 /**
  * @author TeamworkGuy2
  * @since 2014-12-24
  */
-public class PrimitiveListInfo extends PrimitiveClassTemplateDeprecated {
+public class PrimitiveListInfo extends PrimitiveTypeClassTemplate {
 	/** the class name of the iterator class this primitive list uses */
 	public String iteratorName;
 	/** the class name of the primitive iterator class this primitive list uses */

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codeTemplate.ClassTemplate;
-import codeTemplate.PrimitiveClassTemplateDeprecated;
+import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
 
 public class MapInfo extends ClassTemplate {
 	public List<MapType> types;
@@ -12,7 +12,7 @@ public class MapInfo extends ClassTemplate {
 
 
 
-	public static class MapType extends PrimitiveClassTemplateDeprecated {
+	public static class MapType extends PrimitiveTypeClassTemplate {
 		public String valueTypeSignature;
 		public String valueType;
 		public String checkEquality;

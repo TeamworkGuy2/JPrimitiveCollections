@@ -1,5 +1,5 @@
 PrimitiveBag(var) ::= <<
-package primitiveCollections;
+package $var.packageName$;
 
 /** A primitive $var.type$ implementation of an {@link java.util.ArrayList ArrayList}.<br>
  * The order of elements in the bag is not preserved when items are removed.<br>
