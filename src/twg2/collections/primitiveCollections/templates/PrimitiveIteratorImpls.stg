@@ -29,7 +29,8 @@ $endif$	private volatile int modCached = 0;
 	 * false to thrown an {@link UnsupportedOperationException\}
 	 */
 	public $var.className$($var.collectionType$ col, int off, int len, int offStartIndex) {
-		this.col = col;
+$if(var.hasCollMod)$		this.modCached = col.mod;
+$endif$		this.col = col;
 		this.off = off;
 		this.size = off + len;
 		this.index = off + offStartIndex - 1; // start at the previous index since next() is called get the first item

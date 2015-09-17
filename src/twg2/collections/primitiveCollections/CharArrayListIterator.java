@@ -27,6 +27,7 @@ public class CharArrayListIterator implements CharIterator {
 	 * false to thrown an {@link UnsupportedOperationException}
 	 */
 	public CharArrayListIterator(CharArrayList col, int off, int len, int offStartIndex) {
+		this.modCached = col.mod;
 		this.col = col;
 		this.off = off;
 		this.size = off + len;

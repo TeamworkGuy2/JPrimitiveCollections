@@ -149,15 +149,15 @@ public class GeneratePrimitiveCollections {
 		Class<?>[] classTypes = { Character.TYPE, Integer.TYPE, Float.TYPE, Long.TYPE, Double.TYPE };
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$type$[]", "length", "[", "]", true, "mod", "$type$ArrayIterator", "$Type$Iterator", pkgName));
+			infos.add(generatePrimitiveIteratorInfo(classType, "$type$[]", "length", "[", "]", true, false, "mod", "$type$ArrayIterator", "$Type$Iterator", pkgName));
 		}
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ArrayList", "size()", ".get(", ")", false, "col.mod", "$type$ArrayListIterator", "$Type$Iterator", pkgName));
+			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ArrayList", "size()", ".get(", ")", false, true, "col.mod", "$type$ArrayListIterator", "$Type$Iterator", pkgName));
 		}
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ListSorted", "size()", ".get(", ")", false, "col.mod", "$type$ListSortedIterator", "$Type$Iterator", pkgName));
+			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ListSorted", "size()", ".get(", ")", false, true, "col.mod", "$type$ListSortedIterator", "$Type$Iterator", pkgName));
 		}
 
 		TemplateRenders.renderClassTemplates(templateDir + "PrimitiveIteratorImpls.stg", "PrimitiveIteratorImpls", infos.toArray(new PrimitiveIteratorInfo[infos.size()]));
@@ -165,7 +165,7 @@ public class GeneratePrimitiveCollections {
 
 
 	public static final PrimitiveIteratorInfo generatePrimitiveIteratorInfo(Class<?> primitiveType, String collectionTypeTmpl,
-			String sizeGetter, String getterStart, String getterEnd, boolean hasOwnMod, String modGetter, String classNameTmpl, String parentClassNameTmpl, String packageName) {
+			String sizeGetter, String getterStart, String getterEnd, boolean hasOwnMod, boolean hasCollMod, String modGetter, String classNameTmpl, String parentClassNameTmpl, String packageName) {
 		PrimitiveIteratorInfo tmpl = PrimitiveTemplates.ofType(primitiveType, new PrimitiveIteratorInfo(), "", packageName);
 		String typeNameUpper = tmpl.typeShortTitleCase;
 		String typeNameLower = tmpl.typeShort;
@@ -177,6 +177,7 @@ public class GeneratePrimitiveCollections {
 		tmpl.getterEnd = getterEnd;
 		tmpl.modGetter = modGetter;
 		tmpl.hasOwnMod = hasOwnMod;
+		tmpl.hasCollMod = hasCollMod;
 
 		return tmpl;
 	}
@@ -282,6 +283,7 @@ public class GeneratePrimitiveCollections {
 		public String getterEnd;
 		public String modGetter;
 		public boolean hasOwnMod;
+		public boolean hasCollMod;
 
 		public PrimitiveIteratorInfo() {
 		}

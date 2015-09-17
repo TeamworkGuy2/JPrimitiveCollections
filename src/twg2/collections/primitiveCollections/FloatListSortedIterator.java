@@ -27,6 +27,7 @@ public class FloatListSortedIterator implements FloatIterator {
 	 * false to thrown an {@link UnsupportedOperationException}
 	 */
 	public FloatListSortedIterator(FloatListSorted col, int off, int len, int offStartIndex) {
+		this.modCached = col.mod;
 		this.col = col;
 		this.off = off;
 		this.size = off + len;

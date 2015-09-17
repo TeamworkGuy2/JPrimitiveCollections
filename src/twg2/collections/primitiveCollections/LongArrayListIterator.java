@@ -27,6 +27,7 @@ public class LongArrayListIterator implements LongIterator {
 	 * false to thrown an {@link UnsupportedOperationException}
 	 */
 	public LongArrayListIterator(LongArrayList col, int off, int len, int offStartIndex) {
+		this.modCached = col.mod;
 		this.col = col;
 		this.off = off;
 		this.size = off + len;

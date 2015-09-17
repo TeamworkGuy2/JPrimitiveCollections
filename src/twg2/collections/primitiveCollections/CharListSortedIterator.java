@@ -27,6 +27,7 @@ public class CharListSortedIterator implements CharIterator {
 	 * false to thrown an {@link UnsupportedOperationException}
 	 */
 	public CharListSortedIterator(CharListSorted col, int off, int len, int offStartIndex) {
+		this.modCached = col.mod;
 		this.col = col;
 		this.off = off;
 		this.size = off + len;

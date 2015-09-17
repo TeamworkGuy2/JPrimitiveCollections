@@ -27,6 +27,7 @@ public class DoubleListSortedIterator implements DoubleIterator {
 	 * false to thrown an {@link UnsupportedOperationException}
 	 */
 	public DoubleListSortedIterator(DoubleListSorted col, int off, int len, int offStartIndex) {
+		this.modCached = col.mod;
 		this.col = col;
 		this.off = off;
 		this.size = off + len;
