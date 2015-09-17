@@ -10,8 +10,10 @@ import java.util.function.Function;
 
 import twg2.collections.primitiveCollections.templates.MapInfo;
 import twg2.collections.primitiveCollections.templates.PrimitiveListInfo;
-import typeInfo.JavaPrimitives;
+import twg2.primitiveIoTypes.JavaPrimitive;
 import codeTemplate.ClassTemplate;
+import codeTemplate.ClassTemplateBuilder;
+import codeTemplate.TemplateNames;
 import codeTemplate.primitiveTemplate.PrimitiveClassAndType;
 import codeTemplate.primitiveTemplate.PrimitiveTemplates;
 import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
@@ -41,7 +43,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveListReadOnly.stg", "PrimitiveListReadOnly", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, "$Type$ListReadOnly", pkgName);
+			return PrimitiveTemplates.ofType(type, "$Type$ListReadOnly", pkgName);
 		});
 	}
 
@@ -50,7 +52,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveList.stg", "PrimitiveList", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveTypeClassTemplate(), "$Type$List", pkgName).implement("$Type$ListReadOnly").getTemplate();
+			return ClassTemplateBuilder.of(PrimitiveTemplates.ofType(type, new PrimitiveTypeClassTemplate(), "$Type$List", pkgName)).implement("$Type$ListReadOnly").getTemplate();
 		});
 	}
 
@@ -61,7 +63,7 @@ public class GeneratePrimitiveCollections {
 		String arrayListIter = "$type$ArrayListIterator";
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveArrayList.stg", "PrimitiveArrayList", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, PrimitiveListInfo.iteratorTypes(type, iterWrapper, arrayListIter), "$Type$ArrayList", pkgName);
+			return PrimitiveTemplates.ofType(type, PrimitiveListInfo.iteratorTypes(type, iterWrapper, arrayListIter), "$Type$ArrayList", pkgName);
 		});
 	}
 
@@ -72,7 +74,7 @@ public class GeneratePrimitiveCollections {
 		String listSortedIter = "$type$ListSortedIterator";
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveSortedList.stg", "PrimitiveSortedList", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, PrimitiveListInfo.iteratorTypes(type, iterWrapper, listSortedIter), "$Type$ListSorted", pkgName);
+			return PrimitiveTemplates.ofType(type, PrimitiveListInfo.iteratorTypes(type, iterWrapper, listSortedIter), "$Type$ListSorted", pkgName);
 		});
 	}
 
@@ -81,7 +83,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveBag.stg", "PrimitiveBag", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new PrimitiveListInfo(type), "$Type$Bag", pkgName);
+			return PrimitiveTemplates.ofType(type, new PrimitiveListInfo(type), "$Type$Bag", pkgName);
 		});
 	}
 
@@ -90,7 +92,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveArrayView.stg", "PrimitiveArrayView", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new ArrayViewInfo(type, "o == objs[i]", true), "$Type$ArrayView", pkgName);
+			return PrimitiveTemplates.ofType(type, new ArrayViewInfo(type, "o == objs[i]", true), "$Type$ArrayView", pkgName);
 		});
 	}
 
@@ -99,7 +101,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveMapReadOnly.stg", "PrimitiveMapReadOnly", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new MapInfo.MapType(type, "T", "T", ".equals", "null"), "$Type$MapReadOnly", pkgName);
+			return PrimitiveTemplates.ofType(type, new MapInfo.MapType(type, "T", "T", ".equals", "null"), "$Type$MapReadOnly", pkgName);
 		});
 	}
 
@@ -108,7 +110,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveSortedMap.stg", "PrimitiveSortedMap", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new MapInfo.MapType(type, "T", "T", ".equals", "null"), "$Type$MapSorted", pkgName).implement("$Type$MapReadOnly<T>").getTemplate();
+			return ClassTemplateBuilder.of(PrimitiveTemplates.ofType(type, new MapInfo.MapType(type, "T", "T", ".equals", "null"), "$Type$MapSorted", pkgName)).implement("$Type$MapReadOnly<T>").getTemplate();
 		});
 	}
 
@@ -117,7 +119,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveArrayViewHandle.stg", "PrimitiveArrayViewHandle", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveIteratorInfo(type, "$Type$ArrayView"), "$Type$ArrayViewHandle", pkgName).getTemplate();
+			return ClassTemplateBuilder.of(PrimitiveTemplates.ofType(type, new PrimitiveIteratorInfo(type, "$Type$ArrayView"), "$Type$ArrayViewHandle", pkgName)).getTemplate();
 		});
 	}
 
@@ -126,7 +128,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveIteratorReadOnly.stg", "PrimitiveIteratorReadOnly", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new PrimitiveTypeClassTemplate(type), "$Type$IteratorReadOnly", pkgName);
+			return PrimitiveTemplates.ofType(type, new PrimitiveTypeClassTemplate(type), "$Type$IteratorReadOnly", pkgName);
 		});
 	}
 
@@ -135,7 +137,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveIterator.stg", "PrimitiveIterator", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplateBuilder(type, new PrimitiveTypeClassTemplate(type), "$Type$Iterator", pkgName).implement("$Type$IteratorReadOnly").getTemplate();
+			return ClassTemplateBuilder.of(PrimitiveTemplates.ofType(type, new PrimitiveTypeClassTemplate(type), "$Type$Iterator", pkgName)).implement("$Type$IteratorReadOnly").getTemplate();
 		});
 	}
 
@@ -164,7 +166,7 @@ public class GeneratePrimitiveCollections {
 
 	public static final PrimitiveIteratorInfo generatePrimitiveIteratorInfo(Class<?> primitiveType, String collectionTypeTmpl,
 			String sizeGetter, String getterStart, String getterEnd, boolean hasOwnMod, String modGetter, String classNameTmpl, String parentClassNameTmpl, String packageName) {
-		PrimitiveIteratorInfo tmpl = PrimitiveTemplates.newPrimitiveTemplate(primitiveType, new PrimitiveIteratorInfo(), "", packageName);
+		PrimitiveIteratorInfo tmpl = PrimitiveTemplates.ofType(primitiveType, new PrimitiveIteratorInfo(), "", packageName);
 		String typeNameUpper = tmpl.typeShortTitleCase;
 		String typeNameLower = tmpl.typeShort;
 		tmpl.className = classNameTmpl.replace("$type$", tmpl.typeShortTitleCase);
@@ -184,7 +186,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveIteratorWrapper.stg", "PrimitiveIteratorWrapper", (type) -> {
-			return PrimitiveTemplates.newPrimitiveTemplate(type, new WrapperTemplateInfo(type), "$Type$IteratorWrapper", pkgName);
+			return PrimitiveTemplates.ofType(type, new WrapperTemplateInfo(type), "$Type$IteratorWrapper", pkgName);
 		});
 	}
 
@@ -242,7 +244,7 @@ public class GeneratePrimitiveCollections {
 
 		public MapTmplInfo(Class<?> keyType, Class<?> valueType, String defaultValueValue) {
 			super(keyType);
-			this.valueType = JavaPrimitives.getByType(valueType).getJavaPrimitiveName();
+			this.valueType = JavaPrimitive.getByType(valueType).getJavaPrimitiveName();
 			this.defaultValueValue = defaultValueValue;
 		}
 
@@ -290,7 +292,7 @@ public class GeneratePrimitiveCollections {
 
 		public PrimitiveIteratorInfo(Class<?> primitiveType, String collectionType) {
 			super(primitiveType);
-			this.collectionType = PrimitiveTemplates.inferPropertyName(collectionType, JavaPrimitives.getByType(primitiveType));
+			this.collectionType = TemplateNames.inferClassName(collectionType, JavaPrimitive.getByType(primitiveType));
 		}
 
 	}

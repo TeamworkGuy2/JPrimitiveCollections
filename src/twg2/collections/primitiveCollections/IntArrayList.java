@@ -436,6 +436,15 @@ public class IntArrayList implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
+	/** Warning: This function is available for performance reasons, it is highly recommended to use {@link #get(int)} or {@link #iterator()}.<br>
+	 * Note: the return value may change between calls and references to the return value should only be held in contexts where complete control over parent collection modification can be ensured.
+	 * @return the underlying array used by this collection, current implementations store data start at index 0 through {@link #size()} - 1
+	 */
+	public int[] getRawArray() {
+		return this.data;
+	}
+
+
 	public List<Integer> toList() {
 		List<Integer> values = new ArrayList<>(this.size);
 		addToCollection(values);

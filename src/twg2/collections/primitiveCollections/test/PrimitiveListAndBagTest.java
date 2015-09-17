@@ -34,6 +34,7 @@ public class PrimitiveListAndBagTest {
 		intGroups.add(entry("delta", randomInts(rand, 10)));
 
 		StringBuilder strB = new StringBuilder();
+
 		for(int i = 0, size = intGroups.size(); i < size; i++) {
 			strStrs.add(entry(intGroups.get(i).getKey(), strB.append(intGroups.get(i).getKey()).reverse().toString()));
 			strB.setLength(0);
@@ -41,8 +42,10 @@ public class PrimitiveListAndBagTest {
 			int[] intAry = intGroups.get(i).getValue();
 			ints.addAll(intAry);
 			intsSorted.addAll(intAry);
+
 			Arrays.sort(intAry);
 			Assert.assertArrayEquals(intsSorted.toArray(), intAry);
+
 			ints.clear();
 			intsSorted.clear();
 		}
