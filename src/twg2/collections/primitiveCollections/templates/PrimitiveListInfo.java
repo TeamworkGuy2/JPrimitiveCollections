@@ -3,8 +3,8 @@ package twg2.collections.primitiveCollections.templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import codeTemplate.ClassInfo;
-import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
+import twg2.template.codeTemplate.ClassInfo;
+import twg2.template.codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
 
 /**
  * @author TeamworkGuy2

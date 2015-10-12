@@ -8,17 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.stringtemplate.v4.ST;
+
 import twg2.collections.primitiveCollections.templates.MapInfo;
 import twg2.collections.primitiveCollections.templates.PrimitiveListInfo;
-import twg2.primitiveIoTypes.JavaPrimitive;
-import codeTemplate.ClassTemplate;
-import codeTemplate.ClassTemplateBuilder;
-import codeTemplate.TemplateNames;
-import codeTemplate.primitiveTemplate.PrimitiveClassAndType;
-import codeTemplate.primitiveTemplate.PrimitiveTemplates;
-import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
-import codeTemplate.render.TemplateRenders;
-import codeTemplate.render.TemplateRendersUtil;
+import twg2.primitiveIoTypes.JPrimitiveType;
+import twg2.template.codeTemplate.ClassInfo;
+import twg2.template.codeTemplate.ClassTemplate;
+import twg2.template.codeTemplate.ClassTemplateBuilder;
+import twg2.template.codeTemplate.TemplateNames;
+import twg2.template.codeTemplate.primitiveTemplate.PrimitiveClassAndType;
+import twg2.template.codeTemplate.primitiveTemplate.PrimitiveTemplates;
+import twg2.template.codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
+import twg2.template.codeTemplate.render.STTemplates;
+import twg2.template.codeTemplate.render.StringTemplatesUtil;
+import twg2.template.codeTemplate.render.TemplateImports;
+import twg2.template.codeTemplate.render.TemplateWriters;
 
 /**
  * @author TeamworkGuy2
@@ -31,7 +36,7 @@ public class GeneratePrimitiveCollections {
 
 
 	private static <T extends PrimitiveTypeClassTemplate> void genBasicPrimitiveTmpls(String templateFileName, String templateName, Function<Class<?>, T> supplier) {
-		TemplateRendersUtil.generatePrimitiveClassTemplates(templateFileName, templateName, primitiveTypes, (type) -> {
+		TemplateWriters.renderPrimitiveClassTemplates(templateFileName, templateName, TemplateImports.emptyInst(), primitiveTypes, (type) -> {
 			T tmpl = supplier.apply(type);
 			Map.Entry<PrimitiveClassAndType, Object> entry = new AbstractMap.SimpleImmutableEntry<>(new PrimitiveClassAndType(tmpl, tmpl), tmpl);
 			return entry;
@@ -160,7 +165,10 @@ public class GeneratePrimitiveCollections {
 			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ListSorted", "size()", ".get(", ")", false, true, "col.mod", "$type$ListSortedIterator", "$Type$Iterator", pkgName));
 		}
 
-		TemplateRenders.renderClassTemplates(templateDir + "PrimitiveIteratorImpls.stg", "PrimitiveIteratorImpls", infos.toArray(new PrimitiveIteratorInfo[infos.size()]));
+		ST stTmpl = STTemplates.fromFile(templateDir + "PrimitiveIteratorImpls.stg", "PrimitiveIteratorImpls", TemplateImports.emptyInst());
+		for(ClassInfo clsInfo : infos.toArray(new PrimitiveIteratorInfo[infos.size()])) {
+			StringTemplatesUtil.renderClassTemplate(stTmpl, clsInfo, "var", clsInfo);
+		}
 	}
 
 
@@ -245,7 +253,7 @@ public class GeneratePrimitiveCollections {
 
 		public MapTmplInfo(Class<?> keyType, Class<?> valueType, String defaultValueValue) {
 			super(keyType);
-			this.valueType = JavaPrimitive.getByType(valueType).getJavaPrimitiveName();
+			this.valueType = JPrimitiveType.fromType(valueType).getJavaPrimitiveName();
 			this.defaultValueValue = defaultValueValue;
 		}
 
@@ -294,7 +302,7 @@ public class GeneratePrimitiveCollections {
 
 		public PrimitiveIteratorInfo(Class<?> primitiveType, String collectionType) {
 			super(primitiveType);
-			this.collectionType = TemplateNames.inferClassName(collectionType, JavaPrimitive.getByType(primitiveType));
+			this.collectionType = TemplateNames.inferClassName(collectionType, JPrimitiveType.fromType(primitiveType));
 		}
 
 	}

@@ -3,8 +3,8 @@ package twg2.collections.primitiveCollections.templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import codeTemplate.ClassTemplate;
-import codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
+import twg2.template.codeTemplate.ClassTemplate;
+import twg2.template.codeTemplate.primitiveTemplate.PrimitiveTypeClassTemplate;
 
 public class MapInfo extends ClassTemplate {
 	public List<MapType> types;
