@@ -3,6 +3,7 @@ package twg2.collections.primitiveCollections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.RandomAccess;
 
 /** A primitive long implementation of an {@link ArrayList}.<br>
@@ -296,6 +297,20 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	 */
 	public long[] getRawArray() {
 		return this.data;
+	}
+
+
+	public List<Long> toList() {
+		List<Long> values = new ArrayList<>(this.size);
+		addToCollection(values);
+		return values;
+	}
+
+
+	public void addToCollection(Collection<Long> dst) {
+		for(int i = 0; i < this.size; i++) {
+			dst.add(this.data[i]);
+		}
 	}
 
 

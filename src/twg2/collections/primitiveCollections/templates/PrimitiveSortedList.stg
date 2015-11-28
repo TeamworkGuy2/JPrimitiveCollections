@@ -4,6 +4,7 @@ package $var.packageName$;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.RandomAccess;
 
 /** A primitive $var.type$ implementation of an {@link ArrayList}.<br>
@@ -297,6 +298,20 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	 */
 	public $var.type$[] getRawArray() {
 		return this.data;
+	}
+
+
+	public List<$var.objectType$> toList() {
+		List<$var.objectType$> values = new ArrayList<>(this.size);
+		addToCollection(values);
+		return values;
+	}
+
+
+	public void addToCollection(Collection<$var.objectType$> dst) {
+		for(int i = 0; i < this.size; i++) {
+			dst.add(this.data[i]);
+		}
 	}
 
 

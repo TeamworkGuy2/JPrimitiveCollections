@@ -3,6 +3,7 @@ package twg2.collections.primitiveCollections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.RandomAccess;
 
 /** A primitive double implementation of an {@link ArrayList}.<br>
@@ -296,6 +297,20 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	 */
 	public double[] getRawArray() {
 		return this.data;
+	}
+
+
+	public List<Double> toList() {
+		List<Double> values = new ArrayList<>(this.size);
+		addToCollection(values);
+		return values;
+	}
+
+
+	public void addToCollection(Collection<Double> dst) {
+		for(int i = 0; i < this.size; i++) {
+			dst.add(this.data[i]);
+		}
 	}
 
 

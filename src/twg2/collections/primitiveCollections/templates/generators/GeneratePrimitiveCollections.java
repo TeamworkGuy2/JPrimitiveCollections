@@ -30,7 +30,7 @@ import twg2.template.codeTemplate.render.TemplateWriters;
  * @since 2014-12-20
  */
 public class GeneratePrimitiveCollections {
-	private static List<Class<?>> primitiveTypes = Arrays.asList(new Class<?>[] { Character.TYPE, Integer.TYPE, Float.TYPE, Long.TYPE, Double.TYPE });
+	private static List<Class<?>> primitiveTypes = Arrays.asList(Character.TYPE, Integer.TYPE, Float.TYPE, Long.TYPE, Double.TYPE);
 	private static String templateDir = "src/twg2/collections/primitiveCollections/templates/";
 	private static String templatePkg = "twg2.collections.primitiveCollections";
 
@@ -167,7 +167,7 @@ public class GeneratePrimitiveCollections {
 
 		ST stTmpl = STTemplates.fromFile(templateDir + "PrimitiveIteratorImpls.stg", "PrimitiveIteratorImpls", TemplateImports.emptyInst());
 		for(ClassInfo clsInfo : infos.toArray(new PrimitiveIteratorInfo[infos.size()])) {
-			StringTemplatesUtil.renderClassTemplate(stTmpl, clsInfo, "var", clsInfo);
+			StringTemplatesUtil.renderClass(stTmpl, clsInfo, "var", clsInfo);
 		}
 	}
 
@@ -200,26 +200,6 @@ public class GeneratePrimitiveCollections {
 	}
 
 
-	public static final void generatePrimitiveCollections() throws IOException {
-		generatePrimitiveListReadOnly();
-		generatePrimitiveList();
-		generatePrimitiveArrayList();
-		generatePrimitiveSortedList();
-		generatePrimitiveBag();
-		generatePrimitiveViews();
-		generatePrimitiveMapsReadOnly();
-		generatePrimitiveMaps();
-		generatePrimitiveViewHandles();
-		generatePrimitiveIteratorsReadOnly();
-		generatePrimitiveIterators();
-		generatePrimitiveIteratorImpls();
-		generatePrimitiveIteratorWrappers();
-	}
-
-
-	public static void main(String[] args) throws IOException {
-		generatePrimitiveCollections();
-	}
 
 
 	/**
@@ -231,9 +211,13 @@ public class GeneratePrimitiveCollections {
 	}
 
 
+
+
 	public static class IteratorInfos extends ClassTemplate {
 		public List<PrimitiveIteratorInfo> types;
 	}
+
+
 
 
 	public static class WrapperTemplateInfo extends PrimitiveTypeClassTemplate {
@@ -247,6 +231,8 @@ public class GeneratePrimitiveCollections {
 	}
 
 
+
+
 	public static class MapTmplInfo extends PrimitiveTypeClassTemplate {
 		public String valueType;
 		public String defaultValueValue;
@@ -258,6 +244,8 @@ public class GeneratePrimitiveCollections {
 		}
 
 	}
+
+
 
 
 	public static class ArrayViewInfo extends WrapperTemplateInfo {
@@ -278,6 +266,8 @@ public class GeneratePrimitiveCollections {
 		}
 
 	}
+
+
 
 
 	/**
@@ -305,6 +295,30 @@ public class GeneratePrimitiveCollections {
 			this.collectionType = TemplateNames.inferClassName(collectionType, JPrimitiveType.fromType(primitiveType));
 		}
 
+	}
+
+
+
+
+	public static final void generatePrimitiveCollections() throws IOException {
+		generatePrimitiveListReadOnly();
+		generatePrimitiveList();
+		generatePrimitiveArrayList();
+		generatePrimitiveSortedList();
+		generatePrimitiveBag();
+		generatePrimitiveViews();
+		generatePrimitiveMapsReadOnly();
+		generatePrimitiveMaps();
+		generatePrimitiveViewHandles();
+		generatePrimitiveIteratorsReadOnly();
+		generatePrimitiveIterators();
+		generatePrimitiveIteratorImpls();
+		generatePrimitiveIteratorWrappers();
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		generatePrimitiveCollections();
 	}
 
 }
