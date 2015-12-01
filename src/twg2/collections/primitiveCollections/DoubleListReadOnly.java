@@ -6,7 +6,7 @@ package twg2.collections.primitiveCollections;
  * @since 2015-5-24
  */
 @javax.annotation.Generated("StringTemplate")
-public interface DoubleListReadOnly extends java.util.RandomAccess {
+public interface DoubleListReadOnly extends java.util.RandomAccess, DoubleSearchable {
 
 	/** Create a copy of this double list
 	 * @return a copy of this double list
@@ -28,6 +28,7 @@ public interface DoubleListReadOnly extends java.util.RandomAccess {
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
+	@Override
 	public boolean contains(double value);
 
 
@@ -36,18 +37,21 @@ public interface DoubleListReadOnly extends java.util.RandomAccess {
 	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
 	 * is found, or -1 if the value cannot be found
 	 */
+	@Override
 	public int indexOf(double value);
 
 
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */
+	@Override
 	public int size();
 
 
 	/** Check if this collection is empty
 	 * @return true if this has zero elements, false otherwise
 	 */
+	@Override
 	public boolean isEmpty();
 
 

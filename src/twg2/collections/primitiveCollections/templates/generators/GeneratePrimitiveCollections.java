@@ -48,7 +48,16 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveListReadOnly.stg", "PrimitiveListReadOnly", (type) -> {
-			return PrimitiveTemplates.ofType(type, "$Type$ListReadOnly", pkgName);
+			return ClassTemplateBuilder.of(PrimitiveTemplates.ofType(type, "$Type$ListReadOnly", pkgName)).implement("java.util.RandomAccess", "$Type$Searchable").getTemplate();
+		});
+	}
+
+
+	public static final void generatePrimitiveSearchable() throws IOException {
+		String pkgName = templatePkg;
+
+		genBasicPrimitiveTmpls(templateDir + "PrimitiveSearchable.stg", "PrimitiveSearchable", (type) -> {
+			return PrimitiveTemplates.ofType(type, "$Type$Searchable", pkgName);
 		});
 	}
 
@@ -302,6 +311,7 @@ public class GeneratePrimitiveCollections {
 
 	public static final void generatePrimitiveCollections() throws IOException {
 		generatePrimitiveListReadOnly();
+		generatePrimitiveSearchable();
 		generatePrimitiveList();
 		generatePrimitiveArrayList();
 		generatePrimitiveSortedList();

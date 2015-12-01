@@ -7,7 +7,7 @@ package $var.packageName$;
  * @since 2015-5-24
  */
 @javax.annotation.Generated("StringTemplate")
-public interface $var.className$ extends $var.implementClassNames:{x | $x$}; separator=", "$java.util.RandomAccess {
+public interface $var.className$ extends $var.implementClassNames:{x | $x$}; separator=", "$ {
 
 	/** Create a copy of this $var.type$ list
 	 * @return a copy of this $var.type$ list
@@ -29,6 +29,7 @@ public interface $var.className$ extends $var.implementClassNames:{x | $x$}; sep
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
+	@Override
 	public boolean contains($var.type$ value);
 
 
@@ -37,18 +38,21 @@ public interface $var.className$ extends $var.implementClassNames:{x | $x$}; sep
 	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
 	 * is found, or -1 if the value cannot be found
 	 */
+	@Override
 	public int indexOf($var.type$ value);
 
 
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */
+	@Override
 	public int size();
 
 
 	/** Check if this collection is empty
 	 * @return true if this has zero elements, false otherwise
 	 */
+	@Override
 	public boolean isEmpty();
 
 
