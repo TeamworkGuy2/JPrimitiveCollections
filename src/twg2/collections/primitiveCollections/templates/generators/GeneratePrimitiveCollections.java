@@ -163,15 +163,15 @@ public class GeneratePrimitiveCollections {
 		Class<?>[] classTypes = { Character.TYPE, Integer.TYPE, Float.TYPE, Long.TYPE, Double.TYPE };
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$type$[]", "length", "[", "]", true, false, "mod", "$type$ArrayIterator", "$Type$Iterator", pkgName));
+			infos.add(createPrimitiveIteratorInfo(classType, "$type$[]", "length", "[", "]", true, false, "mod", "$type$ArrayIterator", "$Type$Iterator", pkgName));
 		}
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ArrayList", "size()", ".get(", ")", false, true, "col.mod", "$type$ArrayListIterator", "$Type$Iterator", pkgName));
+			infos.add(createPrimitiveIteratorInfo(classType, "$Type$ArrayList", "size()", ".get(", ")", false, true, "col.mod", "$type$ArrayListIterator", "$Type$Iterator", pkgName));
 		}
 
 		for(Class<?> classType : classTypes) {
-			infos.add(generatePrimitiveIteratorInfo(classType, "$Type$ListSorted", "size()", ".get(", ")", false, true, "col.mod", "$type$ListSortedIterator", "$Type$Iterator", pkgName));
+			infos.add(createPrimitiveIteratorInfo(classType, "$Type$ListSorted", "size()", ".get(", ")", false, true, "col.mod", "$type$ListSortedIterator", "$Type$Iterator", pkgName));
 		}
 
 		ST stTmpl = STTemplates.fromFile(templateDir + "PrimitiveIteratorImpls.stg", "PrimitiveIteratorImpls", TemplateImports.emptyInst());
@@ -181,7 +181,7 @@ public class GeneratePrimitiveCollections {
 	}
 
 
-	public static final PrimitiveIteratorInfo generatePrimitiveIteratorInfo(Class<?> primitiveType, String collectionTypeTmpl,
+	public static final PrimitiveIteratorInfo createPrimitiveIteratorInfo(Class<?> primitiveType, String collectionTypeTmpl,
 			String sizeGetter, String getterStart, String getterEnd, boolean hasOwnMod, boolean hasCollMod, String modGetter, String classNameTmpl, String parentClassNameTmpl, String packageName) {
 		PrimitiveIteratorInfo tmpl = PrimitiveTemplates.ofType(primitiveType, new PrimitiveIteratorInfo(), "", packageName);
 		String typeNameUpper = tmpl.typeShortTitleCase;

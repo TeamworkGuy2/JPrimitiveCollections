@@ -41,6 +41,15 @@ public interface DoubleListReadOnly extends java.util.RandomAccess, DoubleSearch
 	public int indexOf(double value);
 
 
+	/** Find the last occurring index of the specified double in this list
+	 * @param value the value to search for in this list
+	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
+	 * is found, or -1 if the value cannot be found
+	 */
+	@Override
+	public int lastIndexOf(double value);
+
+
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */

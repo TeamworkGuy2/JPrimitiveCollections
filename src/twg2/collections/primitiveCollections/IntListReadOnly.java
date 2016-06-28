@@ -41,6 +41,15 @@ public interface IntListReadOnly extends java.util.RandomAccess, IntSearchable {
 	public int indexOf(int value);
 
 
+	/** Find the last occurring index of the specified int in this list
+	 * @param value the value to search for in this list
+	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
+	 * is found, or -1 if the value cannot be found
+	 */
+	@Override
+	public int lastIndexOf(int value);
+
+
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */

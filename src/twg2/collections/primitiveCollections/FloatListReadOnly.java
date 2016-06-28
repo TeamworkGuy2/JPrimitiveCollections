@@ -41,6 +41,15 @@ public interface FloatListReadOnly extends java.util.RandomAccess, FloatSearchab
 	public int indexOf(float value);
 
 
+	/** Find the last occurring index of the specified float in this list
+	 * @param value the value to search for in this list
+	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
+	 * is found, or -1 if the value cannot be found
+	 */
+	@Override
+	public int lastIndexOf(float value);
+
+
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */

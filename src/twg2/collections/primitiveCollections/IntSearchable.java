@@ -22,6 +22,14 @@ public interface IntSearchable {
 	public int indexOf(int value);
 
 
+	/** Find the last occurring index of the specified int in this group of elements
+	 * @param value the value to search for in this list
+	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
+	 * is found, or -1 if the value cannot be found
+	 */
+	public int lastIndexOf(int value);
+
+
 	/** Get the current size of this searchable group of elements
 	 * @return the size of this searchable group
 	 */

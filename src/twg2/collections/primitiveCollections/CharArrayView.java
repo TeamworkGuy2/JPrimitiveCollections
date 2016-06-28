@@ -139,6 +139,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 	}
 
 
+	@Override
 	public int lastIndexOf(char o) {
 		int modCached = mod;
 		for(int i = off + len - 1; i >= off; i--) {
@@ -219,7 +220,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 	}
 
 
-@Override
+	@Override
 	public void toString(Appendable dst) {
 		int modCached = mod;
 		try {

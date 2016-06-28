@@ -58,7 +58,7 @@ public interface IntList extends java.util.RandomAccess, IntListReadOnly {
 	public void clear();
 
 
-	/** invoke toString() and store the resulting string in an {@link Appendable} destination parameter.
+	/** Equivalent to invoking toString() and appending the resulting string in the {@link Appendable} {@code dst} parameter.<br>
 	 * NOTE: implementations SHOULD optimized this method to reduce StringBuilder garbage objects
 	 */
 	public void toString(Appendable dst);

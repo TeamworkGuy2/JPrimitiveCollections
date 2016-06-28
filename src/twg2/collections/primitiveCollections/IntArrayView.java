@@ -139,6 +139,7 @@ public final class IntArrayView implements IntList, java.util.RandomAccess, Iter
 	}
 
 
+	@Override
 	public int lastIndexOf(int o) {
 		int modCached = mod;
 		for(int i = off + len - 1; i >= off; i--) {
@@ -219,7 +220,7 @@ public final class IntArrayView implements IntList, java.util.RandomAccess, Iter
 	}
 
 
-@Override
+	@Override
 	public void toString(Appendable dst) {
 		int modCached = mod;
 		try {

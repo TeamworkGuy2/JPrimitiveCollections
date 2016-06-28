@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.RandomAccess;
 
-/** A primitive double implementation of an {@link ArrayList}.<br/> 
+/** A primitive double implementation of an {@link ArrayList}.<br> 
  * The {@link #get(int) get()} and {@link #add(double) add()} operations are O(1).
  * The {@link #remove(int) remove()}, {@link #removeValue(double) remove()}, and
  * {@link #contains(double) contains()} operations are approximately O(n).<br>
@@ -128,14 +128,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 */
 	@Override
 	public int indexOf(double value) {
-		// Search for the item to remove
 		for(int i = 0; i < size; i++) {
-			// If the item is found, return true
 			if(value == data[i]) {
 				return i;
 			}
 		}
-		// Else if the item is not found, return false
 		return -1;
 	}
 
@@ -149,14 +146,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 * found, or -1 if the value cannot be found
 	 */
 	public int indexOf(double value, int fromIndex) {
-		// Search for the item to remove
 		for(int i = fromIndex; i < size; i++) {
-			// If the item is found, return true
 			if(value == data[i]) {
 				return i;
 			}
 		}
-		// Else if the item is not found, return false
 		return -1;
 	}
 
@@ -166,15 +160,13 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value is
 	 * found, or -1 if the value cannot be found
 	 */
+	@Override
 	public int lastIndexOf(double value) {
-		// Search for the item to remove
 		for(int i = size - 1; i > -1; i--) {
-			// If the item is found, return true
 			if(value == data[i]) {
 				return i;
 			}
 		}
-		// Else if the item is not found, return false
 		return -1;
 	}
 
@@ -197,8 +189,6 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 		if(index < 0 || index >= size) {
 			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
 		}
-		// Shift all elements above the remove element to fill the empty index
-		// Get the item to remove
 		double item = data[index];
 
 		removeRange(index, 1);
@@ -213,12 +203,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 		}
 		mod++;
 		// Shift all elements above the remove element to fill the empty index
-		// Get the item to remove
 		// Copy down the remaining upper half of the array if the item removed was not the last item in the array
 		if(off + len < size) {
 			System.arraycopy(data, off + len, data, off, size - (off + len));
 		}
-		// Decrease the size because we removed one item
+		// Decrease the size because we removed items
 		size -= len;
 	}
 
@@ -229,9 +218,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 */
 	@Override
 	public boolean removeValue(double item) {
-		// Search for the item to remove
 		for(int i = 0; i < size; i++) {
-			// If the item is found, remove it
 			if(item == data[i]) {
 				mod++;
 				if(i < size - 1) {
@@ -251,11 +238,9 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	@Override
 	public void add(double item) {
 		mod++;
-		// If the list is too small, expand it
 		if(size >= data.length) {
 			expandList();
 		}
-		// Add the new item
 		data[size] = item;
 		size++;
 	}
@@ -271,12 +256,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
 		}
 		mod++;
-		// If the list is too small, expand it
 		if(size >= data.length) {
 			expandList();
 		}
+		// shift items up to make room for the new item
 		System.arraycopy(data, index, data, index + 1, size - index);
-		// Add the new item
 		data[index] = value;
 		size++;
 	}
@@ -302,10 +286,6 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 			throw new IllegalArgumentException("number of elements to add must not be negative (" + len + ")");
 		}
 		mod++;
-		// If the list is too small, expand it 
-		// -1 because if data.length=2 and size=1, and len=1, we could fit an
-		// element without expanding the list, but 1+1 >= 2 is true, so instead 1+1-1 >= 2
-		// keeps the list from expanding unnecessarily
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
@@ -335,15 +315,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	 */
 	public boolean addAll(Collection<? extends Double> items) {
 		int len = items.size();
-		// If the list is too small, expand it 
-		// -1 because if data.length=2 and size=1, and len=1, we could fit an
-		// element without expanding the list, but 1+1 >= 2 is true, so instead 1+1-1 >= 2
-		// keeps the list from expanding unnecessarily
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
-		// Add the new items
+		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
 		if(items instanceof List && items instanceof RandomAccess) {
 			List<? extends Double> itemsList = (List<? extends Double>)items;
 			for(int i = 0; i < len; i++) {
@@ -396,11 +372,9 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 
 	public void clearFull() {
 		mod++;
-		// Clear list to null
 		for(int i = 0; i < size; i++) {
 			data[i] = 0;
 		}
-		// Set the size back to the beginning of the array
 		size = 0;
 	}
 
@@ -619,7 +593,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 
 
 	public static final double average(DoubleArrayList list) {
-		return (double)sum(list) / list.size;
+		return list.size > 0 ? (double)sum(list) / list.size : 0;
 	}
 
 

@@ -70,7 +70,6 @@ public class CharBag extends CharArrayList implements CharList, java.util.Random
 		}
 		// Shift all elements above the remove element to fill the empty index
 		else {
-			// Get the item to remove
 			char item = data[index];
 			// move the last element in the array into this removed index
 			if(index < size - 1) {
@@ -89,9 +88,7 @@ public class CharBag extends CharArrayList implements CharList, java.util.Random
 	 */
 	@Override
 	public boolean removeValue(char item) {
-		// Search for the item to remove
 		for(int i = 0; i < size; i++) {
-			// If the item is found, remove it
 			if(item == data[i]) {
 				if(i < size - 1) {
 					data[i] = data[size - 1];

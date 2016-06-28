@@ -104,9 +104,21 @@ public class IntMapSorted<T> implements IntMapReadOnly<T>, RandomAccess {
 	 * @return the index of the key if it is contained in this list, else return -1
 	 */
 	@Override
-	public int indexOf(int key) {
-		int index = Arrays.binarySearch(keys, 0, size, key);
-		return index > -1 ? index : -1;
+	public int indexOfKey(int key) {
+		int idx = Arrays.binarySearch(keys, 0, size, key);
+		return idx > -1 ? idx : -1;
+	}
+
+
+
+	/** Get the last index of the specified key in this sorted list if it exists
+	 * @param key the key to search for in this list
+	 * @return the index of the key if it is contained in this list, else return -1
+	 */
+	@Override
+	public int lastIndexOfKey(int key) {
+		int idx = Arrays.binarySearch(keys, 0, size, key);
+		return idx > -1 ? idx : -1;
 	}
 
 
@@ -161,7 +173,7 @@ public class IntMapSorted<T> implements IntMapReadOnly<T>, RandomAccess {
 	 * To determine the difference, call {@link #contains(int)}
 	 */
 	public T remove(int key) {
-		int index = indexOf(key);
+		int index = indexOfKey(key);
 		if(index > -1 && index < size) {
 		@SuppressWarnings("unchecked")
 			T value = (T)values[index];

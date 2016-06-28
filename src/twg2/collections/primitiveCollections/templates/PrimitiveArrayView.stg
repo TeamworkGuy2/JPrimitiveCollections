@@ -140,6 +140,7 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 	}
 
 
+	@Override
 	public int lastIndexOf($var.type$ o) {
 		int modCached = mod;
 		for(int i = off + len - 1; i >= off; i--) {
@@ -220,7 +221,7 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 	}
 
 
-@Override
+	@Override
 	public void toString(Appendable dst) {
 		int modCached = mod;
 		try {

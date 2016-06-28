@@ -41,7 +41,14 @@ public interface FloatMapReadOnly<T> extends RandomAccess {
 	 * @param key the key to search for in this list
 	 * @return the index of the key if it is contained in this list, else return -1
 	 */
-	public int indexOf(float key);
+	public int indexOfKey(float key);
+
+
+	/** Get the last index of the specified key in this sorted list if it exists
+	 * @param key the key to search for in this list
+	 * @return the index of the key if it is contained in this list, else return -1
+	 */
+	public int lastIndexOfKey(float key);
 
 
 	/** Get the index of the specified value in this map if it exists

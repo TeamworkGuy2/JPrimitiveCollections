@@ -41,6 +41,15 @@ public interface LongListReadOnly extends java.util.RandomAccess, LongSearchable
 	public int indexOf(long value);
 
 
+	/** Find the last occurring index of the specified long in this list
+	 * @param value the value to search for in this list
+	 * @return an index between {@code [0, }{@link #size()}{@code -1]} if the value
+	 * is found, or -1 if the value cannot be found
+	 */
+	@Override
+	public int lastIndexOf(long value);
+
+
 	/** Get the current size of this collection
 	 * @return the size of this collection
 	 */

@@ -41,7 +41,14 @@ public interface LongMapReadOnly<T> extends RandomAccess {
 	 * @param key the key to search for in this list
 	 * @return the index of the key if it is contained in this list, else return -1
 	 */
-	public int indexOf(long key);
+	public int indexOfKey(long key);
+
+
+	/** Get the last index of the specified key in this sorted list if it exists
+	 * @param key the key to search for in this list
+	 * @return the index of the key if it is contained in this list, else return -1
+	 */
+	public int lastIndexOfKey(long key);
 
 
 	/** Get the index of the specified value in this map if it exists

@@ -78,26 +78,46 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	/** Get the index of the specified value in this sorted list if it exists
-	 * @param value the value to search for in this list
-	 * @return the index of the value if it ins contained in this list, else return -1
-	 */
-	@Override
-	public int indexOf(char value) {
-		int index = Arrays.binarySearch(data, 0, size, value);
-		return index > -1 ? index : -1;
-	}
-
-
 	/** Check if the specified values is contained in this list of integers
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
 	@Override
 	public boolean contains(char value) {
-		// Search for the item to remove
 		int index = Arrays.binarySearch(data, 0, size, value);
 		return (index > -1 && index < size);
+	}
+
+
+	/** Get the index of the specified value in this sorted list if it exists
+	 * @param value the value to search for in this list
+	 * @return the index of the value if it ins contained in this list, else return -1
+	 */
+	@Override
+	public int indexOf(char value) {
+		int sz = this.size;
+		int idx = Arrays.binarySearch(data, 0, sz, value);
+		if(idx > -1) {
+			char val = data[idx];
+			while(idx - 1 > -1 && data[idx - 1] == val) { idx--; }
+		}
+		return idx > -1 ? idx : -1;
+	}
+
+
+	/** Get the last index of the specified value in this sorted list if it exists
+	 * @param value the value to search for in this list
+	 * @return the index of the value if it ins contained in this list, else return -1
+	 */
+	@Override
+	public int lastIndexOf(char value) {
+		int sz = this.size;
+		int idx = Arrays.binarySearch(data, 0, sz, value);
+		if(idx > -1) {
+			char val = data[idx];
+			while(idx + 1 < sz && data[idx + 1] == val) { idx++; }
+		}
+		return idx > -1 ? idx : -1;
 	}
 
 
@@ -119,8 +139,6 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 		if(index < 0 || index >= size) {
 			throw new ArrayIndexOutOfBoundsException(index + " of [0, " + size + ")");
 		}
-		// Shift all elements above the remove element to fill the empty index
-		// Get the item to remove
 		char item = data[index];
 
 		removeRange(index, 1);
@@ -135,12 +153,11 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 		}
 		mod++;
 		// Shift all elements above the remove element to fill the empty index
-		// Get the item to remove
 		// Copy down the remaining upper half of the array if the item removed was not the last item in the array
 		if(off + len < size) {
 			System.arraycopy(data, off + len, data, off, size - (off + len));
 		}
-		// Decrease the size because we removed one item
+		// Decrease the size because we removed items
 		size -= len;
 	}
 
@@ -151,7 +168,6 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	 */
 	@Override
 	public boolean removeValue(char value) {
-		// Search for the item to remove
 		int index = Arrays.binarySearch(data, 0, size, value);
 		if(index > -1 && index < size) {
 			mod++;
@@ -168,7 +184,6 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	 */
 	@Override
 	public void add(char item) {
-		// If the list is to small, expand it
 		if(size == data.length) {
 			expandList();
 		}
@@ -251,11 +266,9 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 
 	public void clearFull() {
 		mod++;
-		// Clear list to null
 		for(int i = 0; i < size; i++) {
 			data[i] = (char)0;
 		}
-		// Set the size to zero
 		size = 0;
 	}
 
@@ -421,7 +434,7 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 
 
 	public static final float average(CharListSorted list) {
-		return (float)sum(list) / list.size;
+		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
 
 

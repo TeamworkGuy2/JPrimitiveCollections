@@ -139,6 +139,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	}
 
 
+	@Override
 	public int lastIndexOf(float o) {
 		int modCached = mod;
 		for(int i = off + len - 1; i >= off; i--) {
@@ -219,7 +220,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	}
 
 
-@Override
+	@Override
 	public void toString(Appendable dst) {
 		int modCached = mod;
 		try {
