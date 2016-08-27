@@ -12,7 +12,7 @@ import org.stringtemplate.v4.ST;
 
 import twg2.collections.primitiveCollections.templates.MapInfo;
 import twg2.collections.primitiveCollections.templates.PrimitiveListInfo;
-import twg2.primitiveIoTypes.JPrimitiveType;
+import twg2.simpleTypes.ioPrimitives.JPrimitiveType;
 import twg2.template.codeTemplate.ClassInfo;
 import twg2.template.codeTemplate.ClassTemplate;
 import twg2.template.codeTemplate.ClassTemplateBuilder;

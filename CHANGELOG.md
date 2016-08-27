@@ -4,13 +4,21 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-####[0.1.1](N/A) - 2016-06-26
+####[0.1.2](N/A) - 2016-08-27
+####Changed
+* Updated jsimple-types dependency to latest 0.5.x version
+
+
+--------
+####[0.1.1](https://github.com/TeamworkGuy2/JPrimitiveCollections/commit/c8c5a0399a378cae62757f80456174c71c88759e) - 2016-06-26
 ####Added
 * Added lastIndexOf() to \*MapSorted, \*MapReadOnly, \*ListSorted, \*ListReadOnly, and \*Searchable
 
+####Changed
+* Cleaned up some documentation
+
 ####Fixed
-* Bug in \*MapSorted.indexOf()
-* Bug in \*ListSorted.indexOf()
+* Bug in \*ListSorted.indexOf() not returning lowest index when multiple identical values existed in the sorted list
 
 
 --------

@@ -1,6 +1,6 @@
 DataStructures
 ==============
-version: 0.1.1
+version: 0.1.2
 
 Primitive data collections (char, int, float, long, double), including:
 * array lists - primitive list API mirroring java.util.List
