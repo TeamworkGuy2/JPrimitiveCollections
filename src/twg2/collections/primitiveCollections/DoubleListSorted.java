@@ -91,17 +91,32 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 
 	/** Get the index of the specified value in this sorted list if it exists
 	 * @param value the value to search for in this list
-	 * @return the index of the value if it ins contained in this list, else return -1
+	 * @return the index of the value if it is contained in this list, else return -1
 	 */
 	@Override
 	public int indexOf(double value) {
-		int sz = this.size;
-		int idx = Arrays.binarySearch(data, 0, sz, value);
+		int idx = Arrays.binarySearch(data, 0, this.size, value);
 		if(idx > -1) {
 			double val = data[idx];
-			while(idx - 1 > -1 && data[idx - 1] == val) { idx--; }
+			while(idx > 0 && data[idx - 1] == val) { idx--; }
 		}
 		return idx > -1 ? idx : -1;
+	}
+
+
+	/** Search for the index of a value in this sorted list
+	 * @param value the value to search for in this list
+	 * @return the index of the search value if it is contained in this list;
+	 * otherwise, <tt>(-(<i>insertion point</i>) - 1)</tt>.  The <i>insertion point</i> is defined
+	 * as the point at which the key would be inserted into the array: the index of the first
+	 * element in the range greater than the key, or {@link #size()} if all elements in the range
+	 * are less than the specified key.
+	 * Note that this guarantees that the return value will be &gt;= 0 only if the key is found.
+	 * @see Arrays#binarySearch(double[], int, int, double)
+	 */
+	public int binarySearch(double value) {
+		int idx = Arrays.binarySearch(data, 0, this.size, value);
+		return idx;
 	}
 
 

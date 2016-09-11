@@ -66,4 +66,19 @@ public class PrimitiveListSortedTest {
 		Assert.assertEquals(4, list.lastIndexOf(6));
 	}
 
+
+	public void binarySearchTest() {
+		IntListSorted list = IntListSorted.of();
+		Assert.assertEquals(-1, list.binarySearch(-1));
+		Assert.assertEquals(-1, list.binarySearch(0));
+		Assert.assertEquals(-1, list.binarySearch(5));
+
+		list = IntListSorted.of(5, 4, 2); // [2, 4, 5]
+		Assert.assertEquals(-1, list.binarySearch(-1));
+		Assert.assertEquals(-2, list.binarySearch(3));
+		Assert.assertEquals(1, list.binarySearch(4));
+		Assert.assertEquals(2, list.binarySearch(5));
+		Assert.assertEquals(-3, list.binarySearch(6));
+	}
+
 }
