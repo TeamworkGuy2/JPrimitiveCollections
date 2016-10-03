@@ -15,6 +15,12 @@ import java.util.RandomAccess;
  * without converting them to Long.
  * This simplifies comparison operations such as {@link #contains(long) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see LongBag
  * @see LongListSorted
  *
@@ -28,15 +34,15 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	protected int size;
 
 
-	/** Create an unsorted group of items with a default size of 16
+	/** Create a list of items with a default size of 16
 	 */
 	public LongArrayList() {
 		this(16);
 	}
 
 
-	/** Create an unsorted group of items with the specified size as the starting size
-	 * @param capacity the initial size of the group of items
+	/** Create a list of items with the specified size as the starting size
+	 * @param capacity the initial size capacity of the list of items
 	 */
 	public LongArrayList(int capacity) {
 		this.data = new long[capacity];
@@ -44,12 +50,15 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
+	/** Create a list of items containing a copy of the specified values
+	 * @param values the list of values to copy
+	 */
 	public LongArrayList(long[] values) {
 		this(values, 0, values.length);
 	}
 
 
-	/** Create an unsorted group of items containing a copy of the specified values
+	/** Create a list of items containing a copy of the specified values
 	 * @param values the list of values to copy
 	 * @param off the offset into {@code values} at which to start copying
 	 * @param len the number of elements to copy from {@code values}
@@ -89,7 +98,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 
 
 	/** Get the long at the specified index
-	 * @param index the index between {@code [0, }{@link #size()}{@code -1} to retrieve
+	 * @param index the index between {@code [0, }{@link #size()}{@code -1} inclusive to retrieve
 	 * @return the long found at the specified index
 	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code -1]}
 	 */
@@ -111,7 +120,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Check if the specified values is contained in this list of Longs
+	/** Check if the specified values is contained in this list of longs
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
@@ -197,6 +206,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -212,7 +222,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Remove the specified value from this group
+	/** Remove the specified value from this list
 	 * @param item the value to remove
 	 * @return true if the value was found and removed successfully, false otherwise
 	 */
@@ -232,8 +242,8 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Add the specified item to this group of elements
-	 * @param item the item to add to this group of elements
+	/** Add the specified item to this list
+	 * @param item the item to add
 	 */
 	@Override
 	public void add(long item) {
@@ -273,12 +283,10 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Add the specified sub array of items to this group of elements
+	/** Add the specified sub-array of items to this list
 	 * @param items the array of items
-	 * @param off the offset into {@code off} at which to start adding items
-	 * into this group of elements
-	 * @param len the number of elements, starting at index {@code off}, to
-	 * add to this group of elements from {@code items}
+	 * @param off the offset into {@code items} at which to start adding items to this list
+	 * @param len the number of {@code items}, starting at index {@code off}, to add to this list
 	 */
 	@Override
 	public void addAll(long[] items, int off, int len) {
@@ -309,10 +317,11 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Add a {@link Collection} of {@link Long} objects to this group of elements
+	/** Add a {@link Collection} of {@link Long} objects to this list
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Long> items) {
 		int len = items.size();
 		if(size + len > data.length) {
@@ -356,7 +365,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Clear the group of elements
+	/** Clear this list. After calling this method {@link #size()} returns 0
 	 */
 	@Override
 	public void clear() {
@@ -379,8 +388,8 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Get the current size of this group of elements
-	 * @return the size of this group of elements
+	/**
+	 * @return the current size of this list
 	 */
 	@Override
 	public int size() {
@@ -388,8 +397,8 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Is this group of elements empty
-	 * @return true if this group of elements is empty, false otherwise
+	/**
+	 * @return true if this list is empty ({@code size() == 0}), false otherwise
 	 */
 	@Override
 	public boolean isEmpty() {
@@ -419,6 +428,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
+	@Override
 	public List<Long> toList() {
 		List<Long> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -426,7 +436,8 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public void addToCollection(Collection<Long> dst) {
+	@Override
+	public void addToCollection(Collection<? super Long> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -441,6 +452,30 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 
 	public LongArrayListIterator iteratorPrimitive() {
 		return new LongArrayListIterator(this);
+	}
+
+
+	@Override
+	public double average() {
+		return average(this);
+	}
+
+
+	@Override
+	public long max() {
+		return max(this);
+	}
+
+
+	@Override
+	public long min() {
+		return min(this);
+	}
+
+
+	@Override
+	public long sum() {
+		return sum(this);
 	}
 
 
@@ -487,26 +522,6 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public long sum() {
-		return sum(this);
-	}
-
-
-	public double average() {
-		return average(this);
-	}
-
-
-	public long max() {
-		return max(this);
-	}
-
-
-	public long min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final LongArrayList of(long... values) {
 		LongArrayList inst = new LongArrayList();
@@ -520,7 +535,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final LongArrayList of(Collection<Long> values, int size) {
+	public static final LongArrayList of(Collection<? extends Long> values, int size) {
 		LongArrayList inst = newListOfDefaultValues(size);
 		long[] dat = inst.data;
 		int i = 0;
@@ -582,31 +597,29 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final long sum(LongArrayList list) {
-		long[] values = list.data;
-		long sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
+	public static final double average(LongArrayList list) {
+		return average(list.data, 0, list.size);
 	}
 
 
-	public static final double average(LongArrayList list) {
-		return list.size > 0 ? (double)sum(list) / list.size : 0;
+	public static final double average(long[] vals, int off, int len) {
+		return len > 0 ? (double)sum(vals, off, len) / len : 0;
 	}
 
 
 	public static final long max(LongArrayList list) {
-		int size = list.size;
-		if(size < 1) {
+		return max(list.data, 0, list.size);
+	}
+
+
+	public static final long max(long[] vals, int off, int len) {
+		if(len < 1) {
 			return 0L;
 		}
-		long[] values = list.data;
 		long max = Long.MIN_VALUE;
 		long val = 0;
-		for(int i = 0; i < size; i++) {
-			if(max < (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(max < (val = vals[i])) {
 				max = val;
 			}
 		}
@@ -615,19 +628,36 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 
 
 	public static final long min(LongArrayList list) {
-		int size = list.size;
-		if(size < 1) {
+		return min(list.data, 0, list.size);
+	}
+
+
+	public static final long min(long[] vals, int off, int len) {
+		if(len < 1) {
 			return 0L;
 		}
-		long[] values = list.data;
 		long min = Long.MAX_VALUE;
 		long val = 0;
-		for(int i = 0; i < size; i++) {
-			if(min > (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(min > (val = vals[i])) {
 				min = val;
 			}
 		}
 		return min;
+	}
+
+
+	public static final long sum(LongArrayList list) {
+		return sum(list.data, 0, list.size);
+	}
+
+
+	public static final long sum(long[] vals, int off, int len) {
+		long sum = 0;
+		for(int i = off, size = off + len; i < size; i++) {
+			sum += vals[i];
+		}
+		return sum;
 	}
 
 }

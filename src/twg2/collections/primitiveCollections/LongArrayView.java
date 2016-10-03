@@ -1,5 +1,6 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -13,12 +14,18 @@ import java.util.ListIterator;
  * which maybe be enabled or disabled when an instance of this class is created.<br>
  * {@link LongArrayViewHandle} provides a way to manage an {@code ArrayView} and replace the backing
  * array without creating a new {@code ArrayView}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state neither immutable nor synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see LongArrayViewHandle
  * @author TeamworkGuy2
  * @since 2014-11-29
  */
 public final class LongArrayView implements LongList, java.util.RandomAccess, Iterable<Long> {
-	long[] objs;
+	long[] values;
 	int off;
 	int len;
 	volatile int mod;
@@ -77,7 +84,7 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 	 * false to throw an {@link UnsupportedOperationException} when {@code set} is called
 	 */
 	public LongArrayView(long[] objs, int offset, int length, boolean allowSet) {
-		this.objs = objs;
+		this.values = objs;
 		this.off = offset;
 		this.len = length;
 		this.allowSet = allowSet;
@@ -89,7 +96,7 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
-		long obj = objs[off + index];
+		long obj = values[off + index];
 		return obj;
 	}
 
@@ -99,7 +106,7 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 		if(len < 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		return objs[off + len - 1];
+		return values[off + len - 1];
 	}
 
 
@@ -124,36 +131,77 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 	@Override
 	public int indexOf(long o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = -1;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
 	}
 
 
 	@Override
 	public int lastIndexOf(long o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off + len - 1; i >= off; i--) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = i;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
+	}
+
+
+	@Override
+	public List<Long> toList() {
+		List<Long> values = new ArrayList<>(this.len);
+		LongArrayList.addToCollection(this.values, this.off, this.len, values);
+		return values;
+	}
+
+
+	@Override
+	public void addToCollection(Collection<? super Long> dst) {
+		for(int i = this.off, size = this.off + this.len; i < size; i++) {
+			dst.add(this.values[i]);
+		}
+	}
+
+
+	@Override
+	public long[] toArray() {
+		return Arrays.copyOfRange(values, off, off + len);
+	}
+
+
+	@Override
+	public long[] toArray(long[] dst, int dstOffset) {
+		System.arraycopy(values, off, dst, dstOffset, len);
+		return dst;
+	}
+
+
+	public boolean containsAll(Collection<? extends Long> c) {
+		int modCached = mod;
+		for(Long obj : c) {
+			if(!contains(obj)) {
+				return false;
+			}
+		}
+		if(modCached != mod) {
+			throw new ConcurrentModificationException();
+		}
+		return true;
 	}
 
 
@@ -169,46 +217,31 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 
 
 	public ListIterator<Long> listIterator(int idx) {
-		return new LongIteratorWrapper(new LongArrayIterator(objs, off, len, idx));
+		return new LongIteratorWrapper(new LongArrayIterator(values, off, len, idx));
 	}
 
 
 	@Override
-	public long[] toArray() {
-		return Arrays.copyOfRange(objs, off, off+len);
+	public long sum() {
+		return sum(this);
 	}
 
 
 	@Override
-	public long[] toArray(long[] dst, int dstOffset) {
-		System.arraycopy(objs, off, dst, dstOffset, len);
-		return dst;
-	}
-
-
-	public boolean containsAll(Collection<Long> c) {
-		int modCached = mod;
-		for(Long obj : c) {
-			if(!contains(obj)) {
-				return false;
-			}
-		}
-		if(modCached != mod) {
-			throw new ConcurrentModificationException();
-		}
-		return true;
+	public double average() {
+		return average(this);
 	}
 
 
 	@Override
-	public void add(long e) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public long max() {
+		return max(this);
 	}
 
 
 	@Override
-	public boolean removeValue(long o) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public long min() {
+		return min(this);
 	}
 
 
@@ -228,10 +261,10 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 			if(len > 0) {
 				int count = off + len - 1;
 				for(int i = off; i < count; i++) {
-					dst.append(Long.toString(objs[i]));
+					dst.append(Long.toString(values[i]));
 					dst.append(", ");
 				}
-				dst.append(Long.toString(objs[count]));
+				dst.append(Long.toString(values[count]));
 			}
 			dst.append(']');
 		} catch(java.io.IOException ioe) {
@@ -251,51 +284,148 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 		if(index < 0 || index >= len) {
 			throw new IndexOutOfBoundsException(index + " of view size " + len);
 		}
-		long oldVal = objs[off + index];
-		objs[off + index] = element;
+		long oldVal = values[off + index];
+		values[off + index] = element;
 		mod++;
 		return oldVal;
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void add(long e) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	public void add(int index, long element) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(long... items) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(long[] items, int off, int len) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(LongList coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public long remove(int index) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
-		@Override
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean removeValue(long o) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
 	public LongArrayList copy() {
 		return new LongArrayList(toArray());
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void removeRange(int offset, int length) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean addAll(Collection<? extends Long> coll) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	public static final double average(LongArrayView list) {
+		int modCached = list.mod;
+		double res = list.len > 0 ? (double)sum(list) / list.len : 0;
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final long max(LongArrayView list) {
+		int modCached = list.mod;
+		long res = LongArrayList.max(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final long min(LongArrayView list) {
+		int modCached = list.mod;
+		long res = LongArrayList.min(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final long sum(LongArrayView list) {
+		int modCached = list.mod;
+		long res = LongArrayList.sum(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
 	}
 
 }

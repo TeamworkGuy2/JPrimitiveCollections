@@ -16,6 +16,12 @@ import java.util.RandomAccess;
  * without converting them to $var.objectType$.
  * This simplifies comparison operations such as {@link #contains($var.type$) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see $var.typeShortTitleCase$Bag
  * @see $var.typeShortTitleCase$ListSorted
  *
@@ -29,15 +35,15 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	protected int size;
 
 
-	/** Create an unsorted group of items with a default size of 16
+	/** Create a list of items with a default size of 16
 	 */
 	public $var.className$() {
 		this(16);
 	}
 
 
-	/** Create an unsorted group of items with the specified size as the starting size
-	 * @param capacity the initial size of the group of items
+	/** Create a list of items with the specified size as the starting size
+	 * @param capacity the initial size capacity of the list of items
 	 */
 	public $var.className$(int capacity) {
 		this.data = new $var.type$[capacity];
@@ -45,12 +51,15 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
+	/** Create a list of items containing a copy of the specified values
+	 * @param values the list of values to copy
+	 */
 	public $var.className$($var.type$[] values) {
 		this(values, 0, values.length);
 	}
 
 
-	/** Create an unsorted group of items containing a copy of the specified values
+	/** Create a list of items containing a copy of the specified values
 	 * @param values the list of values to copy
 	 * @param off the offset into {@code values} at which to start copying
 	 * @param len the number of elements to copy from {@code values}
@@ -90,7 +99,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 
 
 	/** Get the $var.type$ at the specified index
-	 * @param index the index between {@code [0, }{@link #size()}{@code -1} to retrieve
+	 * @param index the index between {@code [0, }{@link #size()}{@code -1} inclusive to retrieve
 	 * @return the $var.type$ found at the specified index
 	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code -1]}
 	 */
@@ -112,7 +121,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Check if the specified values is contained in this list of $var.objectType$s
+	/** Check if the specified values is contained in this list of $var.type$s
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
@@ -198,6 +207,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -213,7 +223,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Remove the specified value from this group
+	/** Remove the specified value from this list
 	 * @param item the value to remove
 	 * @return true if the value was found and removed successfully, false otherwise
 	 */
@@ -233,8 +243,8 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Add the specified item to this group of elements
-	 * @param item the item to add to this group of elements
+	/** Add the specified item to this list
+	 * @param item the item to add
 	 */
 	@Override
 	public void add($var.type$ item) {
@@ -274,12 +284,10 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Add the specified sub array of items to this group of elements
+	/** Add the specified sub-array of items to this list
 	 * @param items the array of items
-	 * @param off the offset into {@code off} at which to start adding items
-	 * into this group of elements
-	 * @param len the number of elements, starting at index {@code off}, to
-	 * add to this group of elements from {@code items}
+	 * @param off the offset into {@code items} at which to start adding items to this list
+	 * @param len the number of {@code items}, starting at index {@code off}, to add to this list
 	 */
 	@Override
 	public void addAll($var.type$[] items, int off, int len) {
@@ -310,10 +318,11 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Add a {@link Collection} of {@link $var.objectType$} objects to this group of elements
+	/** Add a {@link Collection} of {@link $var.objectType$} objects to this list
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends $var.objectType$> items) {
 		int len = items.size();
 		if(size + len > data.length) {
@@ -357,7 +366,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Clear the group of elements
+	/** Clear this list. After calling this method {@link #size()} returns 0
 	 */
 	@Override
 	public void clear() {
@@ -380,8 +389,8 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Get the current size of this group of elements
-	 * @return the size of this group of elements
+	/**
+	 * @return the current size of this list
 	 */
 	@Override
 	public int size() {
@@ -389,8 +398,8 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Is this group of elements empty
-	 * @return true if this group of elements is empty, false otherwise
+	/**
+	 * @return true if this list is empty ({@code size() == 0}), false otherwise
 	 */
 	@Override
 	public boolean isEmpty() {
@@ -420,6 +429,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
+	@Override
 	public List<$var.objectType$> toList() {
 		List<$var.objectType$> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -427,7 +437,8 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public void addToCollection(Collection<$var.objectType$> dst) {
+	@Override
+	public void addToCollection(Collection<? super $var.objectType$> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -442,6 +453,30 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 
 	public $var.iteratorPrimitiveName$ iteratorPrimitive() {
 		return new $var.iteratorPrimitiveName$(this);
+	}
+
+
+	@Override
+	public $var.averageType$ average() {
+		return average(this);
+	}
+
+
+	@Override
+	public $var.type$ max() {
+		return max(this);
+	}
+
+
+	@Override
+	public $var.type$ min() {
+		return min(this);
+	}
+
+
+	@Override
+	public $var.type$ sum() {
+		return sum(this);
 	}
 
 
@@ -488,26 +523,6 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public $var.type$ sum() {
-		return sum(this);
-	}
-
-
-	public $var.averageType$ average() {
-		return average(this);
-	}
-
-
-	public $var.type$ max() {
-		return max(this);
-	}
-
-
-	public $var.type$ min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final $var.className$ of($var.type$... values) {
 		$var.className$ inst = new $var.className$();
@@ -521,7 +536,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.className$ of(Collection<$var.objectType$> values, int size) {
+	public static final $var.className$ of(Collection<? extends $var.objectType$> values, int size) {
 		$var.className$ inst = newListOfDefaultValues(size);
 		$var.type$[] dat = inst.data;
 		int i = 0;
@@ -583,31 +598,29 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.type$ sum($var.className$ list) {
-		$var.type$[] values = list.data;
-		$var.type$ sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
+	public static final $var.averageType$ average($var.className$ list) {
+		return average(list.data, 0, list.size);
 	}
 
 
-	public static final $var.averageType$ average($var.className$ list) {
-		return list.size > 0 ? ($var.averageType$)sum(list) / list.size : 0;
+	public static final $var.averageType$ average($var.type$[] vals, int off, int len) {
+		return len > 0 ? ($var.averageType$)sum(vals, off, len) / len : 0;
 	}
 
 
 	public static final $var.type$ max($var.className$ list) {
-		int size = list.size;
-		if(size < 1) {
+		return max(list.data, 0, list.size);
+	}
+
+
+	public static final $var.type$ max($var.type$[] vals, int off, int len) {
+		if(len < 1) {
 			return $var.defaultValue$;
 		}
-		$var.type$[] values = list.data;
 		$var.type$ max = $var.minValue$;
 		$var.type$ val = 0;
-		for(int i = 0; i < size; i++) {
-			if(max < (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(max < (val = vals[i])) {
 				max = val;
 			}
 		}
@@ -616,19 +629,36 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 
 
 	public static final $var.type$ min($var.className$ list) {
-		int size = list.size;
-		if(size < 1) {
+		return min(list.data, 0, list.size);
+	}
+
+
+	public static final $var.type$ min($var.type$[] vals, int off, int len) {
+		if(len < 1) {
 			return $var.defaultValue$;
 		}
-		$var.type$[] values = list.data;
 		$var.type$ min = $var.maxValue$;
 		$var.type$ val = 0;
-		for(int i = 0; i < size; i++) {
-			if(min > (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(min > (val = vals[i])) {
 				min = val;
 			}
 		}
 		return min;
+	}
+
+
+	public static final $var.type$ sum($var.className$ list) {
+		return sum(list.data, 0, list.size);
+	}
+
+
+	public static final $var.type$ sum($var.type$[] vals, int off, int len) {
+		$var.type$ sum = 0;
+		for(int i = off, size = off + len; i < size; i++) {
+			sum += vals[i];
+		}
+		return sum;
 	}
 
 }

@@ -17,6 +17,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<Integer>} by storing the Integers as type <code>int</code>
  * without converting them to Integer.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see IntArrayList
  * @see IntBag
  *
@@ -162,6 +168,7 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -253,6 +260,7 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Integer> items) {
 		boolean res = true;
 		for(Integer item : items) {
@@ -328,6 +336,7 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
+	@Override
 	public List<Integer> toList() {
 		List<Integer> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -335,7 +344,8 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public void addToCollection(Collection<Integer> dst) {
+	@Override
+	public void addToCollection(Collection<? super Integer> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -350,6 +360,30 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 
 	public IntListSortedIterator iteratorPrimitive() {
 		return new IntListSortedIterator(this);
+	}
+
+
+	@Override
+	public float average() {
+		return average(this);
+	}
+
+
+	@Override
+	public int max() {
+		return max(this);
+	}
+
+
+	@Override
+	public int min() {
+		return min(this);
+	}
+
+
+	@Override
+	public int sum() {
+		return sum(this);
 	}
 
 
@@ -396,26 +430,6 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public int sum() {
-		return sum(this);
-	}
-
-
-	public float average() {
-		return average(this);
-	}
-
-
-	public int max() {
-		return max(this);
-	}
-
-
-	public int min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final IntListSorted of(int... values) {
 		IntListSorted inst = new IntListSorted();
@@ -438,16 +452,6 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public static final int sum(IntListSorted list) {
-		int[] values = list.data;
-		int sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average(IntListSorted list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -466,6 +470,16 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 			return list.data[0];
 		}
 		return 0;
+	}
+
+
+	public static final int sum(IntListSorted list) {
+		int[] values = list.data;
+		int sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

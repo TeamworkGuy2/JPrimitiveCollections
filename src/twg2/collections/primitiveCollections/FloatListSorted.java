@@ -17,6 +17,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<Float>} by storing the Floats as type <code>float</code>
  * without converting them to Float.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see FloatArrayList
  * @see FloatBag
  *
@@ -162,6 +168,7 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -253,6 +260,7 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Float> items) {
 		boolean res = true;
 		for(Float item : items) {
@@ -328,6 +336,7 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
+	@Override
 	public List<Float> toList() {
 		List<Float> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -335,7 +344,8 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	public void addToCollection(Collection<Float> dst) {
+	@Override
+	public void addToCollection(Collection<? super Float> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -350,6 +360,30 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 
 	public FloatListSortedIterator iteratorPrimitive() {
 		return new FloatListSortedIterator(this);
+	}
+
+
+	@Override
+	public float average() {
+		return average(this);
+	}
+
+
+	@Override
+	public float max() {
+		return max(this);
+	}
+
+
+	@Override
+	public float min() {
+		return min(this);
+	}
+
+
+	@Override
+	public float sum() {
+		return sum(this);
 	}
 
 
@@ -396,26 +430,6 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	public float sum() {
-		return sum(this);
-	}
-
-
-	public float average() {
-		return average(this);
-	}
-
-
-	public float max() {
-		return max(this);
-	}
-
-
-	public float min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final FloatListSorted of(float... values) {
 		FloatListSorted inst = new FloatListSorted();
@@ -438,16 +452,6 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	public static final float sum(FloatListSorted list) {
-		float[] values = list.data;
-		float sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average(FloatListSorted list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -466,6 +470,16 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 			return list.data[0];
 		}
 		return 0f;
+	}
+
+
+	public static final float sum(FloatListSorted list) {
+		float[] values = list.data;
+		float sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

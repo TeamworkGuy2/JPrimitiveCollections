@@ -1,6 +1,8 @@
 PrimitiveListReadOnly(var) ::= <<
 package $var.packageName$;
 
+import java.util.List;
+
 /** An interface for class that wrap $var.type$ arrays.  This interface provides
  * methods for getting values from the $var.objectType$ array.
  * @author TeamworkGuy2
@@ -22,6 +24,10 @@ public interface $var.className$ extends $var.implementClassNames:{x | $x$}; sep
 	public $var.type$ get(int index);
 
 
+	/**
+	 * @return the last value in this list
+	 * @throws ArrayIndexOutOfBoundsException if this list is empty
+	 */
 	public $var.type$ getLast();
 
 
@@ -65,14 +71,57 @@ public interface $var.className$ extends $var.implementClassNames:{x | $x$}; sep
 	public boolean isEmpty();
 
 
+	/**
+	 * @return the mathematical average of this list of $var.type$s
+	 */
+	public $var.averageType$ average();
+
+
+	/**
+	 * @return the maximum $var.type$ (closest to positive infinity) value in this list
+	 */
+	public $var.type$ max();
+
+
+	/**
+	 * @return the minimum $var.type$ (closest to negative infinity) value in this list
+	 */
+	public $var.type$ min();
+
+
+	/**
+	 * @return the mathematical sum of this list of $var.type$s
+	 */
+	public $var.type$ sum();
+
+
+	/** Copy this list's elements into a new {@code $var.type$[]} array
+	 * @return an array of length {@link #size()} containing a copy of this list's elements
+	 */
 	public $var.type$[] toArray();
 
 
+	/** Copy this list's elements into a new {@code $var.type$[]} array
+	 * @param dst the array to copy the elements into, throws an exception if the array is too small
+	 * @param dstOffset a 0-based {@code dst} offset at which to start copying elements into
+	 * @return the {@code dst} input array
+	 */
 	public $var.type$[] toArray($var.type$[] dst, int dstOffset);
+
+
+	/** Create a {@link $var.objectType$} collection contain a copy of this collection's values
+	 */
+	public List<$var.objectType$> toList();
 
 
 	@Override
 	public String toString();
+
+
+	/** Equivalent to invoking toString() and appending the resulting string in the {@link Appendable} {@code dst} parameter.<br>
+	 * NOTE: implementations SHOULD optimized this method to reduce StringBuilder garbage objects
+	 */
+	public void toString(Appendable dst);
 
 }
 

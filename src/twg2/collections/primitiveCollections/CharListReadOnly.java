@@ -1,5 +1,7 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.List;
+
 /** An interface for class that wrap char arrays.  This interface provides
  * methods for getting values from the Character array.
  * @author TeamworkGuy2
@@ -21,6 +23,10 @@ public interface CharListReadOnly extends java.util.RandomAccess, CharSearchable
 	public char get(int index);
 
 
+	/**
+	 * @return the last value in this list
+	 * @throws ArrayIndexOutOfBoundsException if this list is empty
+	 */
 	public char getLast();
 
 
@@ -64,13 +70,56 @@ public interface CharListReadOnly extends java.util.RandomAccess, CharSearchable
 	public boolean isEmpty();
 
 
+	/**
+	 * @return the mathematical average of this list of chars
+	 */
+	public float average();
+
+
+	/**
+	 * @return the maximum char (closest to positive infinity) value in this list
+	 */
+	public char max();
+
+
+	/**
+	 * @return the minimum char (closest to negative infinity) value in this list
+	 */
+	public char min();
+
+
+	/**
+	 * @return the mathematical sum of this list of chars
+	 */
+	public char sum();
+
+
+	/** Copy this list's elements into a new {@code char[]} array
+	 * @return an array of length {@link #size()} containing a copy of this list's elements
+	 */
 	public char[] toArray();
 
 
+	/** Copy this list's elements into a new {@code char[]} array
+	 * @param dst the array to copy the elements into, throws an exception if the array is too small
+	 * @param dstOffset a 0-based {@code dst} offset at which to start copying elements into
+	 * @return the {@code dst} input array
+	 */
 	public char[] toArray(char[] dst, int dstOffset);
+
+
+	/** Create a {@link Character} collection contain a copy of this collection's values
+	 */
+	public List<Character> toList();
 
 
 	@Override
 	public String toString();
+
+
+	/** Equivalent to invoking toString() and appending the resulting string in the {@link Appendable} {@code dst} parameter.<br>
+	 * NOTE: implementations SHOULD optimized this method to reduce StringBuilder garbage objects
+	 */
+	public void toString(Appendable dst);
 
 }

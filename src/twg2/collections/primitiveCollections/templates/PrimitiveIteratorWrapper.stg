@@ -2,13 +2,18 @@ PrimitiveIteratorWrapper(var) ::= <<
 package $var.packageName$;
 
 /** A $var.type$ array {@link java.util.ListIterator\} that supports {@link #previous\} and {@link #set\}.
- * {@link #add\} and {@link #remove\} are not supported
+ * {@link #add\} and {@link #remove\} are not supported.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is only thread safe if the {@link $var.iteratorName$} instance passed to this class' constructor is thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-17
  */
 @javax.annotation.Generated("StringTemplate")
 public class $var.className$ implements $var.implementClassNames:{x | $x$}; separator=", "$java.util.ListIterator<$var.objectType$> {
-	private $var.iteratorName$ iter;
+	private final $var.iteratorName$ iter;
 
 
 	/** Create an iterator over a set of indices

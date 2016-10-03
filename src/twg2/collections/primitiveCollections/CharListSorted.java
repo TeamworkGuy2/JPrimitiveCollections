@@ -17,6 +17,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<Character>} by storing the Characters as type <code>char</code>
  * without converting them to Character.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see CharArrayList
  * @see CharBag
  *
@@ -162,6 +168,7 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -253,6 +260,7 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Character> items) {
 		boolean res = true;
 		for(Character item : items) {
@@ -328,6 +336,7 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
+	@Override
 	public List<Character> toList() {
 		List<Character> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -335,7 +344,8 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	public void addToCollection(Collection<Character> dst) {
+	@Override
+	public void addToCollection(Collection<? super Character> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -350,6 +360,30 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 
 	public CharListSortedIterator iteratorPrimitive() {
 		return new CharListSortedIterator(this);
+	}
+
+
+	@Override
+	public float average() {
+		return average(this);
+	}
+
+
+	@Override
+	public char max() {
+		return max(this);
+	}
+
+
+	@Override
+	public char min() {
+		return min(this);
+	}
+
+
+	@Override
+	public char sum() {
+		return sum(this);
 	}
 
 
@@ -396,26 +430,6 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	public char sum() {
-		return sum(this);
-	}
-
-
-	public float average() {
-		return average(this);
-	}
-
-
-	public char max() {
-		return max(this);
-	}
-
-
-	public char min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final CharListSorted of(char... values) {
 		CharListSorted inst = new CharListSorted();
@@ -438,16 +452,6 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	public static final char sum(CharListSorted list) {
-		char[] values = list.data;
-		char sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average(CharListSorted list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -466,6 +470,16 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 			return list.data[0];
 		}
 		return (char)0;
+	}
+
+
+	public static final char sum(CharListSorted list) {
+		char[] values = list.data;
+		char sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

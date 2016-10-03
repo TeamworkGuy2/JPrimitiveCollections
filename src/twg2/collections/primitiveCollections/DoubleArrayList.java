@@ -15,6 +15,12 @@ import java.util.RandomAccess;
  * without converting them to Double.
  * This simplifies comparison operations such as {@link #contains(double) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see DoubleBag
  * @see DoubleListSorted
  *
@@ -28,15 +34,15 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	protected int size;
 
 
-	/** Create an unsorted group of items with a default size of 16
+	/** Create a list of items with a default size of 16
 	 */
 	public DoubleArrayList() {
 		this(16);
 	}
 
 
-	/** Create an unsorted group of items with the specified size as the starting size
-	 * @param capacity the initial size of the group of items
+	/** Create a list of items with the specified size as the starting size
+	 * @param capacity the initial size capacity of the list of items
 	 */
 	public DoubleArrayList(int capacity) {
 		this.data = new double[capacity];
@@ -44,12 +50,15 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	/** Create a list of items containing a copy of the specified values
+	 * @param values the list of values to copy
+	 */
 	public DoubleArrayList(double[] values) {
 		this(values, 0, values.length);
 	}
 
 
-	/** Create an unsorted group of items containing a copy of the specified values
+	/** Create a list of items containing a copy of the specified values
 	 * @param values the list of values to copy
 	 * @param off the offset into {@code values} at which to start copying
 	 * @param len the number of elements to copy from {@code values}
@@ -89,7 +98,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 
 
 	/** Get the double at the specified index
-	 * @param index the index between {@code [0, }{@link #size()}{@code -1} to retrieve
+	 * @param index the index between {@code [0, }{@link #size()}{@code -1} inclusive to retrieve
 	 * @return the double found at the specified index
 	 * @throws ArrayIndexOutOfBoundsException if the index is outside the range {@code [0, }{@link #size()}{@code -1]}
 	 */
@@ -111,7 +120,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Check if the specified values is contained in this list of Doubles
+	/** Check if the specified values is contained in this list of doubles
 	 * @param value the value to check for in this list
 	 * @return true if the value was found in the list, false otherwise
 	 */
@@ -197,6 +206,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -212,7 +222,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Remove the specified value from this group
+	/** Remove the specified value from this list
 	 * @param item the value to remove
 	 * @return true if the value was found and removed successfully, false otherwise
 	 */
@@ -232,8 +242,8 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Add the specified item to this group of elements
-	 * @param item the item to add to this group of elements
+	/** Add the specified item to this list
+	 * @param item the item to add
 	 */
 	@Override
 	public void add(double item) {
@@ -273,12 +283,10 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Add the specified sub array of items to this group of elements
+	/** Add the specified sub-array of items to this list
 	 * @param items the array of items
-	 * @param off the offset into {@code off} at which to start adding items
-	 * into this group of elements
-	 * @param len the number of elements, starting at index {@code off}, to
-	 * add to this group of elements from {@code items}
+	 * @param off the offset into {@code items} at which to start adding items to this list
+	 * @param len the number of {@code items}, starting at index {@code off}, to add to this list
 	 */
 	@Override
 	public void addAll(double[] items, int off, int len) {
@@ -309,10 +317,11 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Add a {@link Collection} of {@link Double} objects to this group of elements
+	/** Add a {@link Collection} of {@link Double} objects to this list
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Double> items) {
 		int len = items.size();
 		if(size + len > data.length) {
@@ -356,7 +365,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Clear the group of elements
+	/** Clear this list. After calling this method {@link #size()} returns 0
 	 */
 	@Override
 	public void clear() {
@@ -379,8 +388,8 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Get the current size of this group of elements
-	 * @return the size of this group of elements
+	/**
+	 * @return the current size of this list
 	 */
 	@Override
 	public int size() {
@@ -388,8 +397,8 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Is this group of elements empty
-	 * @return true if this group of elements is empty, false otherwise
+	/**
+	 * @return true if this list is empty ({@code size() == 0}), false otherwise
 	 */
 	@Override
 	public boolean isEmpty() {
@@ -419,6 +428,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	@Override
 	public List<Double> toList() {
 		List<Double> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -426,7 +436,8 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public void addToCollection(Collection<Double> dst) {
+	@Override
+	public void addToCollection(Collection<? super Double> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -441,6 +452,30 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 
 	public DoubleArrayListIterator iteratorPrimitive() {
 		return new DoubleArrayListIterator(this);
+	}
+
+
+	@Override
+	public double average() {
+		return average(this);
+	}
+
+
+	@Override
+	public double max() {
+		return max(this);
+	}
+
+
+	@Override
+	public double min() {
+		return min(this);
+	}
+
+
+	@Override
+	public double sum() {
+		return sum(this);
 	}
 
 
@@ -487,26 +522,6 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public double sum() {
-		return sum(this);
-	}
-
-
-	public double average() {
-		return average(this);
-	}
-
-
-	public double max() {
-		return max(this);
-	}
-
-
-	public double min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final DoubleArrayList of(double... values) {
 		DoubleArrayList inst = new DoubleArrayList();
@@ -520,7 +535,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public static final DoubleArrayList of(Collection<Double> values, int size) {
+	public static final DoubleArrayList of(Collection<? extends Double> values, int size) {
 		DoubleArrayList inst = newListOfDefaultValues(size);
 		double[] dat = inst.data;
 		int i = 0;
@@ -582,31 +597,29 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public static final double sum(DoubleArrayList list) {
-		double[] values = list.data;
-		double sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
+	public static final double average(DoubleArrayList list) {
+		return average(list.data, 0, list.size);
 	}
 
 
-	public static final double average(DoubleArrayList list) {
-		return list.size > 0 ? (double)sum(list) / list.size : 0;
+	public static final double average(double[] vals, int off, int len) {
+		return len > 0 ? (double)sum(vals, off, len) / len : 0;
 	}
 
 
 	public static final double max(DoubleArrayList list) {
-		int size = list.size;
-		if(size < 1) {
+		return max(list.data, 0, list.size);
+	}
+
+
+	public static final double max(double[] vals, int off, int len) {
+		if(len < 1) {
 			return 0;
 		}
-		double[] values = list.data;
 		double max = Double.MIN_VALUE;
 		double val = 0;
-		for(int i = 0; i < size; i++) {
-			if(max < (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(max < (val = vals[i])) {
 				max = val;
 			}
 		}
@@ -615,19 +628,36 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 
 
 	public static final double min(DoubleArrayList list) {
-		int size = list.size;
-		if(size < 1) {
+		return min(list.data, 0, list.size);
+	}
+
+
+	public static final double min(double[] vals, int off, int len) {
+		if(len < 1) {
 			return 0;
 		}
-		double[] values = list.data;
 		double min = Double.MAX_VALUE;
 		double val = 0;
-		for(int i = 0; i < size; i++) {
-			if(min > (val = values[i])) {
+		for(int i = off, size = off + len; i < size; i++) {
+			if(min > (val = vals[i])) {
 				min = val;
 			}
 		}
 		return min;
+	}
+
+
+	public static final double sum(DoubleArrayList list) {
+		return sum(list.data, 0, list.size);
+	}
+
+
+	public static final double sum(double[] vals, int off, int len) {
+		double sum = 0;
+		for(int i = off, size = off + len; i < size; i++) {
+			sum += vals[i];
+		}
+		return sum;
 	}
 
 }

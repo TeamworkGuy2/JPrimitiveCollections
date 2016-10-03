@@ -10,6 +10,11 @@ package twg2.collections.primitiveCollections;
  * without converting them to Double.
  * This simplifies comparison operations such as {@link #contains(double) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, see {@link DoubleArrayList}.
+ * <br><br>
+ *
  * @see DoubleArrayList
  * @see DoubleListSorted
  *

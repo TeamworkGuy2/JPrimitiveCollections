@@ -1,5 +1,7 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.List;
+
 /** An interface for class that wrap double arrays.  This interface provides
  * methods for getting values from the Double array.
  * @author TeamworkGuy2
@@ -21,6 +23,10 @@ public interface DoubleListReadOnly extends java.util.RandomAccess, DoubleSearch
 	public double get(int index);
 
 
+	/**
+	 * @return the last value in this list
+	 * @throws ArrayIndexOutOfBoundsException if this list is empty
+	 */
 	public double getLast();
 
 
@@ -64,13 +70,56 @@ public interface DoubleListReadOnly extends java.util.RandomAccess, DoubleSearch
 	public boolean isEmpty();
 
 
+	/**
+	 * @return the mathematical average of this list of doubles
+	 */
+	public double average();
+
+
+	/**
+	 * @return the maximum double (closest to positive infinity) value in this list
+	 */
+	public double max();
+
+
+	/**
+	 * @return the minimum double (closest to negative infinity) value in this list
+	 */
+	public double min();
+
+
+	/**
+	 * @return the mathematical sum of this list of doubles
+	 */
+	public double sum();
+
+
+	/** Copy this list's elements into a new {@code double[]} array
+	 * @return an array of length {@link #size()} containing a copy of this list's elements
+	 */
 	public double[] toArray();
 
 
+	/** Copy this list's elements into a new {@code double[]} array
+	 * @param dst the array to copy the elements into, throws an exception if the array is too small
+	 * @param dstOffset a 0-based {@code dst} offset at which to start copying elements into
+	 * @return the {@code dst} input array
+	 */
 	public double[] toArray(double[] dst, int dstOffset);
+
+
+	/** Create a {@link Double} collection contain a copy of this collection's values
+	 */
+	public List<Double> toList();
 
 
 	@Override
 	public String toString();
+
+
+	/** Equivalent to invoking toString() and appending the resulting string in the {@link Appendable} {@code dst} parameter.<br>
+	 * NOTE: implementations SHOULD optimized this method to reduce StringBuilder garbage objects
+	 */
+	public void toString(Appendable dst);
 
 }

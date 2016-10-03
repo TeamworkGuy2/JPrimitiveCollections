@@ -1,5 +1,6 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -13,12 +14,18 @@ import java.util.ListIterator;
  * which maybe be enabled or disabled when an instance of this class is created.<br>
  * {@link DoubleArrayViewHandle} provides a way to manage an {@code ArrayView} and replace the backing
  * array without creating a new {@code ArrayView}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state neither immutable nor synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see DoubleArrayViewHandle
  * @author TeamworkGuy2
  * @since 2014-11-29
  */
 public final class DoubleArrayView implements DoubleList, java.util.RandomAccess, Iterable<Double> {
-	double[] objs;
+	double[] values;
 	int off;
 	int len;
 	volatile int mod;
@@ -77,7 +84,7 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 	 * false to throw an {@link UnsupportedOperationException} when {@code set} is called
 	 */
 	public DoubleArrayView(double[] objs, int offset, int length, boolean allowSet) {
-		this.objs = objs;
+		this.values = objs;
 		this.off = offset;
 		this.len = length;
 		this.allowSet = allowSet;
@@ -89,7 +96,7 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
-		double obj = objs[off + index];
+		double obj = values[off + index];
 		return obj;
 	}
 
@@ -99,7 +106,7 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 		if(len < 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		return objs[off + len - 1];
+		return values[off + len - 1];
 	}
 
 
@@ -124,36 +131,77 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 	@Override
 	public int indexOf(double o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = -1;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
 	}
 
 
 	@Override
 	public int lastIndexOf(double o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off + len - 1; i >= off; i--) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = i;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
+	}
+
+
+	@Override
+	public List<Double> toList() {
+		List<Double> values = new ArrayList<>(this.len);
+		DoubleArrayList.addToCollection(this.values, this.off, this.len, values);
+		return values;
+	}
+
+
+	@Override
+	public void addToCollection(Collection<? super Double> dst) {
+		for(int i = this.off, size = this.off + this.len; i < size; i++) {
+			dst.add(this.values[i]);
+		}
+	}
+
+
+	@Override
+	public double[] toArray() {
+		return Arrays.copyOfRange(values, off, off + len);
+	}
+
+
+	@Override
+	public double[] toArray(double[] dst, int dstOffset) {
+		System.arraycopy(values, off, dst, dstOffset, len);
+		return dst;
+	}
+
+
+	public boolean containsAll(Collection<? extends Double> c) {
+		int modCached = mod;
+		for(Double obj : c) {
+			if(!contains(obj)) {
+				return false;
+			}
+		}
+		if(modCached != mod) {
+			throw new ConcurrentModificationException();
+		}
+		return true;
 	}
 
 
@@ -169,46 +217,31 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 
 
 	public ListIterator<Double> listIterator(int idx) {
-		return new DoubleIteratorWrapper(new DoubleArrayIterator(objs, off, len, idx));
+		return new DoubleIteratorWrapper(new DoubleArrayIterator(values, off, len, idx));
 	}
 
 
 	@Override
-	public double[] toArray() {
-		return Arrays.copyOfRange(objs, off, off+len);
+	public double sum() {
+		return sum(this);
 	}
 
 
 	@Override
-	public double[] toArray(double[] dst, int dstOffset) {
-		System.arraycopy(objs, off, dst, dstOffset, len);
-		return dst;
-	}
-
-
-	public boolean containsAll(Collection<Double> c) {
-		int modCached = mod;
-		for(Double obj : c) {
-			if(!contains(obj)) {
-				return false;
-			}
-		}
-		if(modCached != mod) {
-			throw new ConcurrentModificationException();
-		}
-		return true;
+	public double average() {
+		return average(this);
 	}
 
 
 	@Override
-	public void add(double e) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public double max() {
+		return max(this);
 	}
 
 
 	@Override
-	public boolean removeValue(double o) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public double min() {
+		return min(this);
 	}
 
 
@@ -228,10 +261,10 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 			if(len > 0) {
 				int count = off + len - 1;
 				for(int i = off; i < count; i++) {
-					dst.append(Double.toString(objs[i]));
+					dst.append(Double.toString(values[i]));
 					dst.append(", ");
 				}
-				dst.append(Double.toString(objs[count]));
+				dst.append(Double.toString(values[count]));
 			}
 			dst.append(']');
 		} catch(java.io.IOException ioe) {
@@ -251,51 +284,148 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 		if(index < 0 || index >= len) {
 			throw new IndexOutOfBoundsException(index + " of view size " + len);
 		}
-		double oldVal = objs[off + index];
-		objs[off + index] = element;
+		double oldVal = values[off + index];
+		values[off + index] = element;
 		mod++;
 		return oldVal;
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void add(double e) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	public void add(int index, double element) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(double... items) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(double[] items, int off, int len) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(DoubleList coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public double remove(int index) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
-		@Override
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean removeValue(double o) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
 	public DoubleArrayList copy() {
 		return new DoubleArrayList(toArray());
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void removeRange(int offset, int length) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean addAll(Collection<? extends Double> coll) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	public static final double average(DoubleArrayView list) {
+		int modCached = list.mod;
+		double res = list.len > 0 ? (double)sum(list) / list.len : 0;
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final double max(DoubleArrayView list) {
+		int modCached = list.mod;
+		double res = DoubleArrayList.max(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final double min(DoubleArrayView list) {
+		int modCached = list.mod;
+		double res = DoubleArrayList.min(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final double sum(DoubleArrayView list) {
+		int modCached = list.mod;
+		double res = DoubleArrayList.sum(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
 	}
 
 }

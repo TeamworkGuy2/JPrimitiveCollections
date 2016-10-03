@@ -1,13 +1,18 @@
 package twg2.collections.primitiveCollections;
 
 /** A double array {@link java.util.ListIterator} that supports {@link #previous} and {@link #set}.
- * {@link #add} and {@link #remove} are not supported
+ * {@link #add} and {@link #remove} are not supported.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is only thread safe if the {@link DoubleIterator} instance passed to this class' constructor is thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-17
  */
 @javax.annotation.Generated("StringTemplate")
 public class DoubleIteratorWrapper implements java.util.ListIterator<Double> {
-	private DoubleIterator iter;
+	private final DoubleIterator iter;
 
 
 	/** Create an iterator over a set of indices

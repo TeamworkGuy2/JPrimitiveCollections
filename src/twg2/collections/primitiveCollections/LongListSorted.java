@@ -17,6 +17,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<Long>} by storing the Longs as type <code>long</code>
  * without converting them to Long.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see LongArrayList
  * @see LongBag
  *
@@ -162,6 +168,7 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -253,6 +260,7 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Long> items) {
 		boolean res = true;
 		for(Long item : items) {
@@ -328,6 +336,7 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
+	@Override
 	public List<Long> toList() {
 		List<Long> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -335,7 +344,8 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public void addToCollection(Collection<Long> dst) {
+	@Override
+	public void addToCollection(Collection<? super Long> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -350,6 +360,30 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 
 	public LongListSortedIterator iteratorPrimitive() {
 		return new LongListSortedIterator(this);
+	}
+
+
+	@Override
+	public double average() {
+		return average(this);
+	}
+
+
+	@Override
+	public long max() {
+		return max(this);
+	}
+
+
+	@Override
+	public long min() {
+		return min(this);
+	}
+
+
+	@Override
+	public long sum() {
+		return sum(this);
 	}
 
 
@@ -396,26 +430,6 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public long sum() {
-		return sum(this);
-	}
-
-
-	public double average() {
-		return average(this);
-	}
-
-
-	public long max() {
-		return max(this);
-	}
-
-
-	public long min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final LongListSorted of(long... values) {
 		LongListSorted inst = new LongListSorted();
@@ -438,16 +452,6 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final long sum(LongListSorted list) {
-		long[] values = list.data;
-		long sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average(LongListSorted list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -466,6 +470,16 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 			return list.data[0];
 		}
 		return 0L;
+	}
+
+
+	public static final long sum(LongListSorted list) {
+		long[] values = list.data;
+		long sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

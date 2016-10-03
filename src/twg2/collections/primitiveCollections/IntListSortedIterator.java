@@ -1,7 +1,13 @@
 package twg2.collections.primitiveCollections;
 
 /** A int array {@link java.util.ListIterator} that supports {@link #previous} and {@link #set}.
- * {@link #add} and {@link #remove} are not supported
+ * {@link #add} and {@link #remove} are not supported.<br>
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, because the {@code IntListSorted} passed to the constructor is not copied.
+ * The only synchronization consideration is the internal {@code volatile modCached} counter.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-17
  */
@@ -19,7 +25,8 @@ public class IntListSortedIterator implements IntIterator {
 	}
 
 
-	/** Create an iterator over a set of indices
+	/** Create an iterator over a sub-set of an array.<br>
+	 * NOTE: the array is not copied, modifications to the array will be reflected in this iterator.
 	 * @param col the array of values to iterate over
 	 * @param off the minimum index
 	 * @param len maximum iterator index is {@code len + off} 
@@ -84,18 +91,27 @@ public class IntListSortedIterator implements IntIterator {
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void set(int val) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void add(int e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");

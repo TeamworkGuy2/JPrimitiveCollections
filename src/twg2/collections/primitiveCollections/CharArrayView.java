@@ -1,5 +1,6 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -13,12 +14,18 @@ import java.util.ListIterator;
  * which maybe be enabled or disabled when an instance of this class is created.<br>
  * {@link CharArrayViewHandle} provides a way to manage an {@code ArrayView} and replace the backing
  * array without creating a new {@code ArrayView}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state neither immutable nor synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see CharArrayViewHandle
  * @author TeamworkGuy2
  * @since 2014-11-29
  */
 public final class CharArrayView implements CharList, java.util.RandomAccess, Iterable<Character> {
-	char[] objs;
+	char[] values;
 	int off;
 	int len;
 	volatile int mod;
@@ -77,7 +84,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 	 * false to throw an {@link UnsupportedOperationException} when {@code set} is called
 	 */
 	public CharArrayView(char[] objs, int offset, int length, boolean allowSet) {
-		this.objs = objs;
+		this.values = objs;
 		this.off = offset;
 		this.len = length;
 		this.allowSet = allowSet;
@@ -89,7 +96,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
-		char obj = objs[off + index];
+		char obj = values[off + index];
 		return obj;
 	}
 
@@ -99,7 +106,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 		if(len < 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		return objs[off + len - 1];
+		return values[off + len - 1];
 	}
 
 
@@ -124,36 +131,77 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 	@Override
 	public int indexOf(char o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = -1;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
 	}
 
 
 	@Override
 	public int lastIndexOf(char o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off + len - 1; i >= off; i--) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = i;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
+	}
+
+
+	@Override
+	public List<Character> toList() {
+		List<Character> values = new ArrayList<>(this.len);
+		CharArrayList.addToCollection(this.values, this.off, this.len, values);
+		return values;
+	}
+
+
+	@Override
+	public void addToCollection(Collection<? super Character> dst) {
+		for(int i = this.off, size = this.off + this.len; i < size; i++) {
+			dst.add(this.values[i]);
+		}
+	}
+
+
+	@Override
+	public char[] toArray() {
+		return Arrays.copyOfRange(values, off, off + len);
+	}
+
+
+	@Override
+	public char[] toArray(char[] dst, int dstOffset) {
+		System.arraycopy(values, off, dst, dstOffset, len);
+		return dst;
+	}
+
+
+	public boolean containsAll(Collection<? extends Character> c) {
+		int modCached = mod;
+		for(Character obj : c) {
+			if(!contains(obj)) {
+				return false;
+			}
+		}
+		if(modCached != mod) {
+			throw new ConcurrentModificationException();
+		}
+		return true;
 	}
 
 
@@ -169,46 +217,31 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 
 
 	public ListIterator<Character> listIterator(int idx) {
-		return new CharIteratorWrapper(new CharArrayIterator(objs, off, len, idx));
+		return new CharIteratorWrapper(new CharArrayIterator(values, off, len, idx));
 	}
 
 
 	@Override
-	public char[] toArray() {
-		return Arrays.copyOfRange(objs, off, off+len);
+	public char sum() {
+		return sum(this);
 	}
 
 
 	@Override
-	public char[] toArray(char[] dst, int dstOffset) {
-		System.arraycopy(objs, off, dst, dstOffset, len);
-		return dst;
-	}
-
-
-	public boolean containsAll(Collection<Character> c) {
-		int modCached = mod;
-		for(Character obj : c) {
-			if(!contains(obj)) {
-				return false;
-			}
-		}
-		if(modCached != mod) {
-			throw new ConcurrentModificationException();
-		}
-		return true;
+	public float average() {
+		return average(this);
 	}
 
 
 	@Override
-	public void add(char e) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public char max() {
+		return max(this);
 	}
 
 
 	@Override
-	public boolean removeValue(char o) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public char min() {
+		return min(this);
 	}
 
 
@@ -228,10 +261,10 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 			if(len > 0) {
 				int count = off + len - 1;
 				for(int i = off; i < count; i++) {
-					dst.append(Character.toString(objs[i]));
+					dst.append(Character.toString(values[i]));
 					dst.append(", ");
 				}
-				dst.append(Character.toString(objs[count]));
+				dst.append(Character.toString(values[count]));
 			}
 			dst.append(']');
 		} catch(java.io.IOException ioe) {
@@ -251,51 +284,148 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 		if(index < 0 || index >= len) {
 			throw new IndexOutOfBoundsException(index + " of view size " + len);
 		}
-		char oldVal = objs[off + index];
-		objs[off + index] = element;
+		char oldVal = values[off + index];
+		values[off + index] = element;
 		mod++;
 		return oldVal;
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void add(char e) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	public void add(int index, char element) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(char... items) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(char[] items, int off, int len) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(CharList coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public char remove(int index) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
-		@Override
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean removeValue(char o) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
 	public CharArrayList copy() {
 		return new CharArrayList(toArray());
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void removeRange(int offset, int length) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean addAll(Collection<? extends Character> coll) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	public static final float average(CharArrayView list) {
+		int modCached = list.mod;
+		float res = list.len > 0 ? (float)sum(list) / list.len : 0;
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final char max(CharArrayView list) {
+		int modCached = list.mod;
+		char res = CharArrayList.max(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final char min(CharArrayView list) {
+		int modCached = list.mod;
+		char res = CharArrayList.min(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final char sum(CharArrayView list) {
+		int modCached = list.mod;
+		char res = CharArrayList.sum(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
 	}
 
 }

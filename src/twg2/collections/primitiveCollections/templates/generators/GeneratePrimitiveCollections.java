@@ -106,7 +106,7 @@ public class GeneratePrimitiveCollections {
 		String pkgName = templatePkg;
 
 		genBasicPrimitiveTmpls(templateDir + "PrimitiveArrayView.stg", "PrimitiveArrayView", (type) -> {
-			return PrimitiveTemplates.ofType(type, new ArrayViewInfo(type, "o == objs[i]", true), "$Type$ArrayView", pkgName);
+			return PrimitiveTemplates.ofType(type, new ArrayViewInfo(type, "o == values[i]", true), "$Type$ArrayView", pkgName);
 		});
 	}
 

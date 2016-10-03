@@ -11,6 +11,11 @@ package $var.packageName$;
  * without converting them to $var.objectType$.
  * This simplifies comparison operations such as {@link #contains($var.type$) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, see {@link $var.typeShortTitleCase$ArrayList}.
+ * <br><br>
+ *
  * @see $var.typeShortTitleCase$ArrayList
  * @see $var.typeShortTitleCase$ListSorted
  *

@@ -5,6 +5,11 @@ package $var.packageName$;
  * underlying array using {@link #set$var.typeShortTitleCase$ArrayView($var.type$[], int, int)}.
  * Use {@link #get$var.typeShortTitleCase$ArrayView()} to retrieve the array view.
  * An instance of this class manages exactly one {@link $var.collectionType$}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal array view is not thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-18
  */
@@ -12,6 +17,8 @@ public class $var.className$ {
 	private final $var.collectionType$ arrayView;
 
 
+	/** Create an empty array view pointing to a null array reference
+	 */
 	public $var.className$() {
 		this.arrayView = new $var.collectionType$();
 	}
@@ -47,14 +54,22 @@ public class $var.className$ {
 	}
 
 
+	/**
+	 * @return this handle's array view
+	 */
 	public $var.collectionType$ get$var.typeShortTitleCase$ArrayView() {
 		return arrayView;
 	}
 
 
+	/** Point this handle's array view at another array
+	 * @param objs the new array to view
+	 * @param offset the offset into {@code objs} of the array view's {@code 0th} index
+	 * @param length the number of values starting at {@code offset} to include in the view
+	 */
 	public void set$var.typeShortTitleCase$ArrayView($var.type$[] objs, int offset, int length) {
 		arrayView.mod++;
-		arrayView.objs = objs;
+		arrayView.values = objs;
 		arrayView.off = offset;
 		arrayView.len = length;
 	}

@@ -4,6 +4,11 @@ package twg2.collections.primitiveCollections;
  * underlying array using {@link #setDoubleArrayView(double[], int, int)}.
  * Use {@link #getDoubleArrayView()} to retrieve the array view.
  * An instance of this class manages exactly one {@link DoubleArrayView}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal array view is not thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-18
  */
@@ -11,6 +16,8 @@ public class DoubleArrayViewHandle {
 	private final DoubleArrayView arrayView;
 
 
+	/** Create an empty array view pointing to a null array reference
+	 */
 	public DoubleArrayViewHandle() {
 		this.arrayView = new DoubleArrayView();
 	}
@@ -46,14 +53,22 @@ public class DoubleArrayViewHandle {
 	}
 
 
+	/**
+	 * @return this handle's array view
+	 */
 	public DoubleArrayView getDoubleArrayView() {
 		return arrayView;
 	}
 
 
+	/** Point this handle's array view at another array
+	 * @param objs the new array to view
+	 * @param offset the offset into {@code objs} of the array view's {@code 0th} index
+	 * @param length the number of values starting at {@code offset} to include in the view
+	 */
 	public void setDoubleArrayView(double[] objs, int offset, int length) {
 		arrayView.mod++;
-		arrayView.objs = objs;
+		arrayView.values = objs;
 		arrayView.off = offset;
 		arrayView.len = length;
 	}

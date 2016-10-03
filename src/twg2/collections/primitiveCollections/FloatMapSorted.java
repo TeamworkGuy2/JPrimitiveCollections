@@ -13,6 +13,12 @@ import java.util.function.BiConsumer;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code Map<Float, T>} by storing the Floats as type <code>float</code>
  * without converting them to Float.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @param <T> the data type of the values stored in this map
  * @see FloatArrayList
  * @see FloatBag

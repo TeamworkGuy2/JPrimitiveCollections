@@ -1,5 +1,6 @@
 package twg2.collections.primitiveCollections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -13,12 +14,18 @@ import java.util.ListIterator;
  * which maybe be enabled or disabled when an instance of this class is created.<br>
  * {@link FloatArrayViewHandle} provides a way to manage an {@code ArrayView} and replace the backing
  * array without creating a new {@code ArrayView}.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state neither immutable nor synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see FloatArrayViewHandle
  * @author TeamworkGuy2
  * @since 2014-11-29
  */
 public final class FloatArrayView implements FloatList, java.util.RandomAccess, Iterable<Float> {
-	float[] objs;
+	float[] values;
 	int off;
 	int len;
 	volatile int mod;
@@ -77,7 +84,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	 * false to throw an {@link UnsupportedOperationException} when {@code set} is called
 	 */
 	public FloatArrayView(float[] objs, int offset, int length, boolean allowSet) {
-		this.objs = objs;
+		this.values = objs;
 		this.off = offset;
 		this.len = length;
 		this.allowSet = allowSet;
@@ -89,7 +96,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 		if(index > len) {
 			throw new IndexOutOfBoundsException();
 		}
-		float obj = objs[off + index];
+		float obj = values[off + index];
 		return obj;
 	}
 
@@ -99,7 +106,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 		if(len < 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		return objs[off + len - 1];
+		return values[off + len - 1];
 	}
 
 
@@ -124,36 +131,77 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	@Override
 	public int indexOf(float o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = -1;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
 	}
 
 
 	@Override
 	public int lastIndexOf(float o) {
 		int modCached = mod;
+		int foundIdx = -1;
 		for(int i = off + len - 1; i >= off; i--) {
-			if(o == objs[i]) {
-				if(modCached != mod) {
-					throw new ConcurrentModificationException();
-				}
-				return i;
+			if(o == values[i]) {
+				foundIdx = i;
+				break;
 			}
 		}
 		if(modCached != mod) {
 			throw new ConcurrentModificationException();
 		}
-		return -1;
+		return foundIdx;
+	}
+
+
+	@Override
+	public List<Float> toList() {
+		List<Float> values = new ArrayList<>(this.len);
+		FloatArrayList.addToCollection(this.values, this.off, this.len, values);
+		return values;
+	}
+
+
+	@Override
+	public void addToCollection(Collection<? super Float> dst) {
+		for(int i = this.off, size = this.off + this.len; i < size; i++) {
+			dst.add(this.values[i]);
+		}
+	}
+
+
+	@Override
+	public float[] toArray() {
+		return Arrays.copyOfRange(values, off, off + len);
+	}
+
+
+	@Override
+	public float[] toArray(float[] dst, int dstOffset) {
+		System.arraycopy(values, off, dst, dstOffset, len);
+		return dst;
+	}
+
+
+	public boolean containsAll(Collection<? extends Float> c) {
+		int modCached = mod;
+		for(Float obj : c) {
+			if(!contains(obj)) {
+				return false;
+			}
+		}
+		if(modCached != mod) {
+			throw new ConcurrentModificationException();
+		}
+		return true;
 	}
 
 
@@ -169,46 +217,31 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 
 
 	public ListIterator<Float> listIterator(int idx) {
-		return new FloatIteratorWrapper(new FloatArrayIterator(objs, off, len, idx));
+		return new FloatIteratorWrapper(new FloatArrayIterator(values, off, len, idx));
 	}
 
 
 	@Override
-	public float[] toArray() {
-		return Arrays.copyOfRange(objs, off, off+len);
+	public float sum() {
+		return sum(this);
 	}
 
 
 	@Override
-	public float[] toArray(float[] dst, int dstOffset) {
-		System.arraycopy(objs, off, dst, dstOffset, len);
-		return dst;
-	}
-
-
-	public boolean containsAll(Collection<Float> c) {
-		int modCached = mod;
-		for(Float obj : c) {
-			if(!contains(obj)) {
-				return false;
-			}
-		}
-		if(modCached != mod) {
-			throw new ConcurrentModificationException();
-		}
-		return true;
+	public float average() {
+		return average(this);
 	}
 
 
 	@Override
-	public void add(float e) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public float max() {
+		return max(this);
 	}
 
 
 	@Override
-	public boolean removeValue(float o) {
-		throw new UnsupportedOperationException("cannot modified immutable view");
+	public float min() {
+		return min(this);
 	}
 
 
@@ -228,10 +261,10 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 			if(len > 0) {
 				int count = off + len - 1;
 				for(int i = off; i < count; i++) {
-					dst.append(Float.toString(objs[i]));
+					dst.append(Float.toString(values[i]));
 					dst.append(", ");
 				}
-				dst.append(Float.toString(objs[count]));
+				dst.append(Float.toString(values[count]));
 			}
 			dst.append(']');
 		} catch(java.io.IOException ioe) {
@@ -251,51 +284,148 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 		if(index < 0 || index >= len) {
 			throw new IndexOutOfBoundsException(index + " of view size " + len);
 		}
-		float oldVal = objs[off + index];
-		objs[off + index] = element;
+		float oldVal = values[off + index];
+		values[off + index] = element;
 		mod++;
 		return oldVal;
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void add(float e) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	public void add(int index, float element) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(float... items) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(float[] items, int off, int len) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void addAll(FloatList coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public float remove(int index) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
 
-		@Override
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean removeValue(float o) {
+		throw new UnsupportedOperationException("cannot modified immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
 	public FloatArrayList copy() {
 		return new FloatArrayList(toArray());
 	}
 
 
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public void removeRange(int offset, int length) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public boolean addAll(Collection<? extends Float> coll) {
+		throw new UnsupportedOperationException("cannot modify immutable view");
+	}
+
+
+	public static final float average(FloatArrayView list) {
+		int modCached = list.mod;
+		float res = list.len > 0 ? (float)sum(list) / list.len : 0;
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final float max(FloatArrayView list) {
+		int modCached = list.mod;
+		float res = FloatArrayList.max(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final float min(FloatArrayView list) {
+		int modCached = list.mod;
+		float res = FloatArrayList.min(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
+	}
+
+
+	public static final float sum(FloatArrayView list) {
+		int modCached = list.mod;
+		float res = FloatArrayList.sum(list.values, list.off, list.len);
+		if(modCached != list.mod) {
+			throw new ConcurrentModificationException();
+		}
+		return res;
 	}
 
 }

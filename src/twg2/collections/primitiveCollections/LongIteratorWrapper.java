@@ -1,13 +1,18 @@
 package twg2.collections.primitiveCollections;
 
 /** A long array {@link java.util.ListIterator} that supports {@link #previous} and {@link #set}.
- * {@link #add} and {@link #remove} are not supported
+ * {@link #add} and {@link #remove} are not supported.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is only thread safe if the {@link LongIterator} instance passed to this class' constructor is thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-17
  */
 @javax.annotation.Generated("StringTemplate")
 public class LongIteratorWrapper implements java.util.ListIterator<Long> {
-	private LongIterator iter;
+	private final LongIterator iter;
 
 
 	/** Create an iterator over a set of indices

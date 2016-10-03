@@ -1,13 +1,18 @@
 package twg2.collections.primitiveCollections;
 
 /** A int array {@link java.util.ListIterator} that supports {@link #previous} and {@link #set}.
- * {@link #add} and {@link #remove} are not supported
+ * {@link #add} and {@link #remove} are not supported.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is only thread safe if the {@link IntIterator} instance passed to this class' constructor is thread safe.
+ * <br><br>
+ *
  * @author TeamworkGuy2
  * @since 2015-1-17
  */
 @javax.annotation.Generated("StringTemplate")
 public class IntIteratorWrapper implements java.util.ListIterator<Integer> {
-	private IntIterator iter;
+	private final IntIterator iter;
 
 
 	/** Create an iterator over a set of indices

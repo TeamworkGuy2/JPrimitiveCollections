@@ -24,7 +24,7 @@ public class PrimitiveArrayViewTest {
 		DoubleArrayView view = viewHdl.getDoubleArrayView();
 
 		// test array view length
-		Assert.assertTrue("invalid length " + view.size() + " expected " + len, view.size() == len);
+		Assert.assertEquals(len, view.size());
 
 		// test of array view values
 		for(int loopI = 0; loopI < len; loopI++) {
@@ -68,12 +68,62 @@ public class PrimitiveArrayViewTest {
 	public void arrayDoubleViewModifyTest() {
 		double[] vals = new double[] { Math.E, 234.23, 845743 };
 		// TODO test set() on ArrayView with allowSet = true
-		DoubleArrayViewHandle viewHdl = new DoubleArrayViewHandle(vals, 0, vals.length, true);
-		DoubleArrayView view = viewHdl.getDoubleArrayView();
+		DoubleArrayView view = new DoubleArrayViewHandle(vals, 0, vals.length, true).getDoubleArrayView();
 		double insertVal = Math.PI;
 		view.set(2, insertVal);
 		vals[2] = insertVal;
 		Assert.assertTrue(view.get(2) == insertVal);
+	}
+
+
+	@Test
+	public void sumTest() {
+		Assert.assertEquals(100, doubleView(new double[] { 5, 10, 20, 30, 25, 15 }, 1, 5).sum(), 0.0);
+		Assert.assertEquals(10, doubleView(new double[] { 3, 5, 2 }).sum(), 0.0);
+		Assert.assertEquals(0, doubleView(new double[] { }).sum(), 0.0);
+	}
+
+
+	@Test
+	public void avgTest() {
+		Assert.assertEquals(20, doubleView(new double[] { 5, 10, 20, 30, 25, 15 }, 1, 5).average(), 0.0);
+		Assert.assertEquals(0, doubleView(new double[] { }).average(), 0.0);
+		Assert.assertEquals(10 / 3.0, doubleView(new double[] { 1, 3, 5, 2, 1 }, 1, 3).average(), 0.0);
+		Assert.assertEquals(10 / 3.0, doubleView(new double[] { 6, 3, 5, 2, 1 }, 1, 3).average(), 0.0);
+		Assert.assertEquals(10 / 3.0, doubleView(new double[] { 1, 3, 5, 2, 6 }, 1, 3).average(), 0.0);
+		Assert.assertEquals(10 / 3.0, doubleView(new double[] { 6, 3, 5, 2, 6 }, 1, 3).average(), 0.0);
+	}
+
+
+	@Test
+	public void maxTest() {
+		Assert.assertEquals(30, doubleView(new double[] { 5, 10, 20, 30, 25, 15 }, 1, 5).max(), 0.0);
+		Assert.assertEquals(0, doubleView(new double[] { }).max(), 0.0);
+		Assert.assertEquals(5, doubleView(new double[] { 1, 3, 5, 2, 1 }, 1, 3).max(), 0.0);
+		Assert.assertEquals(5, doubleView(new double[] { 6, 3, 5, 2, 1 }, 1, 3).max(), 0.0);
+		Assert.assertEquals(5, doubleView(new double[] { 1, 3, 5, 2, 6 }, 1, 3).max(), 0.0);
+		Assert.assertEquals(5, doubleView(new double[] { 6, 3, 5, 2, 6 }, 1, 3).max(), 0.0);
+	}
+
+
+	@Test
+	public void minTest() {
+		Assert.assertEquals(10, doubleView(new double[] { 5, 10, 20, 30, 25, 15 }, 1, 5).min(), 0.0);
+		Assert.assertEquals(0, doubleView(new double[] { }).min(), 0.0);
+		Assert.assertEquals(2, doubleView(new double[] { 1, 3, 5, 2, 1 }, 1, 3).min(), 0.0);
+		Assert.assertEquals(2, doubleView(new double[] { 6, 3, 5, 2, 1 }, 1, 3).min(), 0.0);
+		Assert.assertEquals(2, doubleView(new double[] { 1, 3, 5, 2, 6 }, 1, 3).min(), 0.0);
+		Assert.assertEquals(2, doubleView(new double[] { 6, 3, 5, 2, 6 }, 1, 3).min(), 0.0);
+	}
+
+
+	private static DoubleArrayView doubleView(double[] vals) {
+		return doubleView(vals, 0, vals.length);
+	}
+
+
+	private static DoubleArrayView doubleView(double[] vals, int off, int len) {
+		return new DoubleArrayViewHandle(vals, off, len).getDoubleArrayView();
 	}
 
 }

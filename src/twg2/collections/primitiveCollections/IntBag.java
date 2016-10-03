@@ -10,6 +10,11 @@ package twg2.collections.primitiveCollections;
  * without converting them to Integer.
  * This simplifies comparison operations such as {@link #contains(int) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, see {@link IntArrayList}.
+ * <br><br>
+ *
  * @see IntArrayList
  * @see IntListSorted
  *

@@ -18,6 +18,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<$var.objectType$>} by storing the $var.objectType$s as type <code>$var.type$</code>
  * without converting them to $var.objectType$.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see $var.typeShortTitleCase$ArrayList
  * @see $var.typeShortTitleCase$Bag
  *
@@ -163,6 +169,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -254,6 +261,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends $var.objectType$> items) {
 		boolean res = true;
 		for($var.objectType$ item : items) {
@@ -329,6 +337,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
+	@Override
 	public List<$var.objectType$> toList() {
 		List<$var.objectType$> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -336,7 +345,8 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public void addToCollection(Collection<$var.objectType$> dst) {
+	@Override
+	public void addToCollection(Collection<? super $var.objectType$> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -351,6 +361,30 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 
 	public $var.iteratorPrimitiveName$ iteratorPrimitive() {
 		return new $var.iteratorPrimitiveName$(this);
+	}
+
+
+	@Override
+	public $var.averageType$ average() {
+		return average(this);
+	}
+
+
+	@Override
+	public $var.type$ max() {
+		return max(this);
+	}
+
+
+	@Override
+	public $var.type$ min() {
+		return min(this);
+	}
+
+
+	@Override
+	public $var.type$ sum() {
+		return sum(this);
 	}
 
 
@@ -397,26 +431,6 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public $var.type$ sum() {
-		return sum(this);
-	}
-
-
-	public $var.averageType$ average() {
-		return average(this);
-	}
-
-
-	public $var.type$ max() {
-		return max(this);
-	}
-
-
-	public $var.type$ min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final $var.className$ of($var.type$... values) {
 		$var.className$ inst = new $var.className$();
@@ -439,16 +453,6 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.type$ sum($var.className$ list) {
-		$var.type$[] values = list.data;
-		$var.type$ sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average($var.className$ list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -467,6 +471,16 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 			return list.data[0];
 		}
 		return $var.defaultValue$;
+	}
+
+
+	public static final $var.type$ sum($var.className$ list) {
+		$var.type$[] values = list.data;
+		$var.type$ sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

@@ -17,6 +17,12 @@ import java.util.RandomAccess;
  * This class' purpose is to provide minor performance and memory usage improvements over an
  * {@code ArrayList<Double>} by storing the Doubles as type <code>double</code>
  * without converting them to Double.
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, since its internal state is not synchronized.
+ * The only synchronization consideration is the internal {@code volatile mod} counter.
+ * <br><br>
+ *
  * @see DoubleArrayList
  * @see DoubleBag
  *
@@ -162,6 +168,7 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
+	@Override
 	public void removeRange(int off, int len) {
 		if(off < 0 || off + len > size) {
 			throw new ArrayIndexOutOfBoundsException((off < 0 ? off : off + len) + " of [0, " + size + ")");
@@ -253,6 +260,7 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	 * @param items the collection of items
 	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
 	 */
+	@Override
 	public boolean addAll(Collection<? extends Double> items) {
 		boolean res = true;
 		for(Double item : items) {
@@ -328,6 +336,7 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
+	@Override
 	public List<Double> toList() {
 		List<Double> values = new ArrayList<>(this.size);
 		addToCollection(values);
@@ -335,7 +344,8 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
-	public void addToCollection(Collection<Double> dst) {
+	@Override
+	public void addToCollection(Collection<? super Double> dst) {
 		for(int i = 0; i < this.size; i++) {
 			dst.add(this.data[i]);
 		}
@@ -350,6 +360,30 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 
 	public DoubleListSortedIterator iteratorPrimitive() {
 		return new DoubleListSortedIterator(this);
+	}
+
+
+	@Override
+	public double average() {
+		return average(this);
+	}
+
+
+	@Override
+	public double max() {
+		return max(this);
+	}
+
+
+	@Override
+	public double min() {
+		return min(this);
+	}
+
+
+	@Override
+	public double sum() {
+		return sum(this);
 	}
 
 
@@ -396,26 +430,6 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
-	public double sum() {
-		return sum(this);
-	}
-
-
-	public double average() {
-		return average(this);
-	}
-
-
-	public double max() {
-		return max(this);
-	}
-
-
-	public double min() {
-		return min(this);
-	}
-
-
 	@SafeVarargs
 	public static final DoubleListSorted of(double... values) {
 		DoubleListSorted inst = new DoubleListSorted();
@@ -438,16 +452,6 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
-	public static final double sum(DoubleListSorted list) {
-		double[] values = list.data;
-		double sum = 0;
-		for(int i = 0, size = list.size; i < size; i++) {
-			sum += values[i];
-		}
-		return sum;
-	}
-
-
 	public static final float average(DoubleListSorted list) {
 		return list.size > 0 ? (float)sum(list) / list.size : 0;
 	}
@@ -466,6 +470,16 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 			return list.data[0];
 		}
 		return 0;
+	}
+
+
+	public static final double sum(DoubleListSorted list) {
+		double[] values = list.data;
+		double sum = 0;
+		for(int i = 0, size = list.size; i < size; i++) {
+			sum += values[i];
+		}
+		return sum;
 	}
 
 }

@@ -10,6 +10,11 @@ package twg2.collections.primitiveCollections;
  * without converting them to Character.
  * This simplifies comparison operations such as {@link #contains(char) contains()}
  * which can use {@code ==} instead of {@code .equals()}
+ *
+ * <h4><a name="synchronization">Synchronization</a></h4>
+ * This class is not thread safe, see {@link CharArrayList}.
+ * <br><br>
+ *
  * @see CharArrayList
  * @see CharListSorted
  *
