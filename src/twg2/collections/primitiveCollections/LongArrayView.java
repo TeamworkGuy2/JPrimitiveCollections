@@ -134,7 +134,7 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
 			if(o == values[i]) {
-				foundIdx = -1;
+				foundIdx = i;
 				break;
 			}
 		}
@@ -175,6 +175,15 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 		for(int i = this.off, size = this.off + this.len; i < size; i++) {
 			dst.add(this.values[i]);
 		}
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public LongArrayList copy() {
+		return new LongArrayList(toArray());
 	}
 
 
@@ -350,15 +359,6 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 	@Override
 	public boolean removeValue(long o) {
 		throw new UnsupportedOperationException("cannot modified immutable view");
-	}
-
-
-	/** Unsupported by this implementation
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public LongArrayList copy() {
-		return new LongArrayList(toArray());
 	}
 
 

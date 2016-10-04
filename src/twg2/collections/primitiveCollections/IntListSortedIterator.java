@@ -95,7 +95,7 @@ public class IntListSortedIterator implements IntIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add(int e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
@@ -113,7 +113,7 @@ public class IntListSortedIterator implements IntIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add(int e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 

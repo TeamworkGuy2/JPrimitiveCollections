@@ -95,7 +95,7 @@ public class LongArrayIterator implements LongIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add(long e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
@@ -113,7 +113,7 @@ public class LongArrayIterator implements LongIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add(long e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 

@@ -135,7 +135,7 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
 			if($var.compareValues$) {
-				foundIdx = -1;
+				foundIdx = i;
 				break;
 			}
 		}
@@ -176,6 +176,15 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 		for(int i = this.off, size = this.off + this.len; i < size; i++) {
 			dst.add(this.values[i]);
 		}
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public $var.collectionType$ copy() {
+		return new $var.collectionType$(toArray());
 	}
 
 
@@ -351,15 +360,6 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 	@Override
 	public boolean removeValue($var.type$ o) {
 		throw new UnsupportedOperationException("cannot modified immutable view");
-	}
-
-
-	/** Unsupported by this implementation
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public $var.collectionType$ copy() {
-		return new $var.collectionType$(toArray());
 	}
 
 

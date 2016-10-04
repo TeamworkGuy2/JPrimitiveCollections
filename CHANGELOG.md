@@ -4,7 +4,19 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-###[0.2.0](N/A) - 2016-10-02
+###[0.2.1](N/A) - 2016-10-03
+#### Added
+* Added *List.iterator() interface method
+
+#### Changed
+* Reordered some methods in various classes/interfaces
+
+#### Fixed
+* Fixed *ArrayView.indexOf() bug
+
+
+--------
+###[0.2.0](https://github.com/TeamworkGuy2/JPrimitiveCollections/commit/66f5407b79b7fb4e5bc1d57c0f53dea8c8d8e22f) - 2016-10-02
 Should be backward compatible with the 0.1.x, but binary compatibility of the jar may be broken due to interface changes.
 
 #### Changed

@@ -7,12 +7,12 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public interface IntIterator extends IntIteratorReadOnly {
 
-	public void remove();
+	public void add(int e);
 
 
 	public void set(int val);
 
 
-	public void add(int e);
+	public void remove();
 
 }

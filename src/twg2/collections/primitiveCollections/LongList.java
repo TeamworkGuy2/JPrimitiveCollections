@@ -1,6 +1,7 @@
 package twg2.collections.primitiveCollections;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.RandomAccess;
 
 /** An interface for class that wrap long arrays.  This interface provides
@@ -79,5 +80,8 @@ public interface LongList extends RandomAccess, LongListReadOnly {
 	/** Clear this list of elements
 	 */
 	public void clear();
+
+
+	public Iterator<Long> iterator();
 
 }

@@ -134,7 +134,7 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
 			if(o == values[i]) {
-				foundIdx = -1;
+				foundIdx = i;
 				break;
 			}
 		}
@@ -175,6 +175,15 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 		for(int i = this.off, size = this.off + this.len; i < size; i++) {
 			dst.add(this.values[i]);
 		}
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public DoubleArrayList copy() {
+		return new DoubleArrayList(toArray());
 	}
 
 
@@ -350,15 +359,6 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 	@Override
 	public boolean removeValue(double o) {
 		throw new UnsupportedOperationException("cannot modified immutable view");
-	}
-
-
-	/** Unsupported by this implementation
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public DoubleArrayList copy() {
-		return new DoubleArrayList(toArray());
 	}
 
 

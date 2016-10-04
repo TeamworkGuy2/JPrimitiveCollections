@@ -95,7 +95,7 @@ public class FloatArrayIterator implements FloatIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add(float e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
@@ -113,7 +113,7 @@ public class FloatArrayIterator implements FloatIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add(float e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 

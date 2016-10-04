@@ -97,7 +97,7 @@ $endif$		this.col = col;
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add($var.type$ e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	\}
 
@@ -115,7 +115,7 @@ $endif$		this.col = col;
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add($var.type$ e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	\}
 

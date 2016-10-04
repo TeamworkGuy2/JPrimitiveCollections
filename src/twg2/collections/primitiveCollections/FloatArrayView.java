@@ -134,7 +134,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 		int foundIdx = -1;
 		for(int i = off, size = off + len; i < size; i++) {
 			if(o == values[i]) {
-				foundIdx = -1;
+				foundIdx = i;
 				break;
 			}
 		}
@@ -175,6 +175,15 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 		for(int i = this.off, size = this.off + this.len; i < size; i++) {
 			dst.add(this.values[i]);
 		}
+	}
+
+
+	/** Unsupported by this implementation
+	 * @throws UnsupportedOperationException
+	 */
+	@Override
+	public FloatArrayList copy() {
+		return new FloatArrayList(toArray());
 	}
 
 
@@ -350,15 +359,6 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	@Override
 	public boolean removeValue(float o) {
 		throw new UnsupportedOperationException("cannot modified immutable view");
-	}
-
-
-	/** Unsupported by this implementation
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public FloatArrayList copy() {
-		return new FloatArrayList(toArray());
 	}
 
 

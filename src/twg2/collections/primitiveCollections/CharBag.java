@@ -24,7 +24,6 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public class CharBag extends CharArrayList implements CharList, java.util.RandomAccess {
 
-
 	/** Create an unsorted group of items with a default size of 16
 	 */
 	public CharBag() {

@@ -8,13 +8,13 @@ package $var.packageName$;
 @javax.annotation.Generated("StringTemplate")
 public interface $var.className$ extends $var.implementClassNames:{x | $x$}; separator=", "$ {
 
-	public void remove();
+	public void add($var.type$ e);
 
 
 	public void set($var.type$ val);
 
 
-	public void add($var.type$ e);
+	public void remove();
 
 }
 

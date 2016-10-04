@@ -25,7 +25,6 @@ package $var.packageName$;
 @javax.annotation.Generated("StringTemplate")
 public class $var.className$ extends $var.extendClassName$ implements $var.implementClassNames:{x | $x$}; separator=", "$, java.util.RandomAccess {
 
-
 	/** Create an unsorted group of items with a default size of 16
 	 */
 	public $var.className$() {

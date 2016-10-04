@@ -2,6 +2,7 @@ PrimitiveList(var) ::= <<
 package $var.packageName$;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.RandomAccess;
 
 /** An interface for class that wrap $var.type$ arrays.  This interface provides
@@ -80,6 +81,9 @@ public interface $var.className$ extends RandomAccess$if(var.implementClassNames
 	/** Clear this list of elements
 	 */
 	public void clear();
+
+
+	public Iterator<$var.objectType$> iterator();
 
 }
 

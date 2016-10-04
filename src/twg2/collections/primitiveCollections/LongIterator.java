@@ -7,12 +7,12 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public interface LongIterator extends LongIteratorReadOnly {
 
-	public void remove();
+	public void add(long e);
 
 
 	public void set(long val);
 
 
-	public void add(long e);
+	public void remove();
 
 }

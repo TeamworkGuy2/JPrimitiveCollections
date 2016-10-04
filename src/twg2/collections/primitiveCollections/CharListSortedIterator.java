@@ -95,7 +95,7 @@ public class CharListSortedIterator implements CharIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add(char e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
@@ -113,7 +113,7 @@ public class CharListSortedIterator implements CharIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add(char e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 

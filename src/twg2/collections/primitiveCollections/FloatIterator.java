@@ -7,12 +7,12 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public interface FloatIterator extends FloatIteratorReadOnly {
 
-	public void remove();
+	public void add(float e);
 
 
 	public void set(float val);
 
 
-	public void add(float e);
+	public void remove();
 
 }

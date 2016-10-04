@@ -7,12 +7,12 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public interface CharIterator extends CharIteratorReadOnly {
 
-	public void remove();
+	public void add(char e);
 
 
 	public void set(char val);
 
 
-	public void add(char e);
+	public void remove();
 
 }

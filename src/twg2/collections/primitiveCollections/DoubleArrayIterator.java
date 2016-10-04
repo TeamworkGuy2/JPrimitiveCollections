@@ -95,7 +95,7 @@ public class DoubleArrayIterator implements DoubleIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void remove() {
+	public void add(double e) {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 
@@ -113,7 +113,7 @@ public class DoubleArrayIterator implements DoubleIterator {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void add(double e) {
+	public void remove() {
 		throw new UnsupportedOperationException("cannot modified immutable list iterator");
 	}
 

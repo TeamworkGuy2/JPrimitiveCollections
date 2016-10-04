@@ -7,12 +7,12 @@ package twg2.collections.primitiveCollections;
 @javax.annotation.Generated("StringTemplate")
 public interface DoubleIterator extends DoubleIteratorReadOnly {
 
-	public void remove();
+	public void add(double e);
 
 
 	public void set(double val);
 
 
-	public void add(double e);
+	public void remove();
 
 }

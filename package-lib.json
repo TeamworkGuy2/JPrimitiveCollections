@@ -1,5 +1,5 @@
 {
-	"version" : "0.2.0",
+	"version" : "0.2.1",
 	"name" : "jprimitive-collections",
 	"description" : "Java Primitive collections, including Char, Int, Float, Long, and Double List, SortedList, ArrayView, Iterator, and Map",
 	"homepage" : "https://github.com/TeamworkGuy2/JPrimitiveCollections",
