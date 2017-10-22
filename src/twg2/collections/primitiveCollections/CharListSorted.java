@@ -256,12 +256,12 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	/** Add a {@link Collection} of {@link Character} objects to this group of elements
+	/** Add an {@link Iterable} of {@link Character} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Character> items) {
+	public boolean addValues(Iterable<? extends Character> items) {
 		boolean res = true;
 		for(Character item : items) {
 			if(item != null) {
@@ -443,7 +443,7 @@ public class CharListSorted implements CharList, RandomAccess, Iterable<Characte
 	}
 
 
-	public static final CharListSorted of(Collection<? extends Character> values, int size) {
+	public static final CharListSorted of(Iterable<? extends Character> values, int size) {
 		CharListSorted inst = new CharListSorted(size);
 		for(Character value : values) {
 			inst.add(value);

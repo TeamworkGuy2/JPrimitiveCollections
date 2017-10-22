@@ -256,12 +256,12 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	/** Add a {@link Collection} of {@link Integer} objects to this group of elements
+	/** Add an {@link Iterable} of {@link Integer} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Integer> items) {
+	public boolean addValues(Iterable<? extends Integer> items) {
 		boolean res = true;
 		for(Integer item : items) {
 			if(item != null) {
@@ -443,7 +443,7 @@ public class IntListSorted implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public static final IntListSorted of(Collection<? extends Integer> values, int size) {
+	public static final IntListSorted of(Iterable<? extends Integer> values, int size) {
 		IntListSorted inst = new IntListSorted(size);
 		for(Integer value : values) {
 			inst.add(value);

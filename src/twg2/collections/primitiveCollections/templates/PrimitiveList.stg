@@ -35,10 +35,10 @@ public interface $var.className$ extends RandomAccess$if(var.implementClassNames
 	public void addAll($var.className$ coll);
 
 
-	/** Add a collection of {@link $var.className$} values to this collection
+	/** Add an iterable of {@link $var.objectType$} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends $var.objectType$> coll);
+	public boolean addValues(Iterable<? extends $var.objectType$> coll);
 
 
 	/** Add the specified array of items to this collection

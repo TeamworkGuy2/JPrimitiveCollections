@@ -384,7 +384,7 @@ public final class CharArrayView implements CharList, java.util.RandomAccess, It
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Character> coll) {
+	public boolean addValues(Iterable<? extends Character> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 

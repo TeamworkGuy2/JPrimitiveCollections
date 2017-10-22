@@ -317,27 +317,38 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Add a {@link Collection} of {@link Long} objects to this list
+	/** Add an {@link Iterable} of {@link Long} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Long> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends Long> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof LongList) {
+				addAll((LongList)items);
+				return true;
+			}
+			for(Long item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends Long> coll = (Collection<? extends Long>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends Long> itemsList = (List<? extends Long>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends Long> itemsList = (List<? extends Long>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for(Long item : items) {
+			for(Long item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -535,7 +546,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final LongArrayList of(Collection<? extends Long> values, int size) {
+	public static final LongArrayList of(Iterable<? extends Long> values, int size) {
 		LongArrayList inst = newListOfDefaultValues(size);
 		long[] dat = inst.data;
 		int i = 0;
@@ -586,7 +597,7 @@ public class LongArrayList implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final long[] toArray(Collection<? extends Long> values, int size) {
+	public static final long[] toArray(Iterable<? extends Long> values, int size) {
 		long[] dst = new long[size];
 		int i = 0;
 		for(Long value : values) {

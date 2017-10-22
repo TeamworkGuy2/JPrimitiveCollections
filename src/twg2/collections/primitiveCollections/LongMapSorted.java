@@ -1,7 +1,6 @@
 package twg2.collections.primitiveCollections;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
@@ -311,12 +310,12 @@ public class LongMapSorted<T> implements LongMapReadOnly<T>, RandomAccess {
 	}
 
 
-	public final void putAll(Collection<? extends Long> keys, Collection<? extends T> values) {
+	public final void putAll(Iterable<? extends Long> keys, Iterable<? extends T> values) {
 		putAll(keys, values, false, true);
 	}
 
 
-	public final void putAll(Collection<? extends Long> keys, Collection<? extends T> values,
+	public final void putAll(Iterable<? extends Long> keys, Iterable<? extends T> values,
 			boolean allowDuplicateKeys, boolean requireEqualSize) {
 		Iterator<? extends Long> keyIter = keys.iterator();
 		Iterator<? extends T> valueIter = values.iterator();

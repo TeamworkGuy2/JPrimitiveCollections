@@ -317,27 +317,38 @@ public class IntArrayList implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	/** Add a {@link Collection} of {@link Integer} objects to this list
+	/** Add an {@link Iterable} of {@link Integer} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Integer> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends Integer> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof IntList) {
+				addAll((IntList)items);
+				return true;
+			}
+			for(Integer item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends Integer> coll = (Collection<? extends Integer>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends Integer> itemsList = (List<? extends Integer>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends Integer> itemsList = (List<? extends Integer>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for(Integer item : items) {
+			for(Integer item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -535,7 +546,7 @@ public class IntArrayList implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public static final IntArrayList of(Collection<? extends Integer> values, int size) {
+	public static final IntArrayList of(Iterable<? extends Integer> values, int size) {
 		IntArrayList inst = newListOfDefaultValues(size);
 		int[] dat = inst.data;
 		int i = 0;
@@ -586,7 +597,7 @@ public class IntArrayList implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
-	public static final int[] toArray(Collection<? extends Integer> values, int size) {
+	public static final int[] toArray(Iterable<? extends Integer> values, int size) {
 		int[] dst = new int[size];
 		int i = 0;
 		for(Integer value : values) {

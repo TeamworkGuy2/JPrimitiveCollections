@@ -257,12 +257,12 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Add a {@link Collection} of {@link $var.objectType$} objects to this group of elements
+	/** Add an {@link Iterable} of {@link $var.objectType$} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends $var.objectType$> items) {
+	public boolean addValues(Iterable<? extends $var.objectType$> items) {
 		boolean res = true;
 		for($var.objectType$ item : items) {
 			if(item != null) {
@@ -444,7 +444,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.className$ of(Collection<? extends $var.objectType$> values, int size) {
+	public static final $var.className$ of(Iterable<? extends $var.objectType$> values, int size) {
 		$var.className$ inst = new $var.className$(size);
 		for($var.objectType$ value : values) {
 			inst.add(value);

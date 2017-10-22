@@ -318,27 +318,38 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	/** Add a {@link Collection} of {@link $var.objectType$} objects to this list
+	/** Add an {@link Iterable} of {@link $var.objectType$} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends $var.objectType$> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends $var.objectType$> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof $var.typeShortTitleCase$List) {
+				addAll(($var.typeShortTitleCase$List)items);
+				return true;
+			}
+			for($var.objectType$ item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends $var.objectType$> coll = (Collection<? extends $var.objectType$>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends $var.objectType$> itemsList = (List<? extends $var.objectType$>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends $var.objectType$> itemsList = (List<? extends $var.objectType$>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for($var.objectType$ item : items) {
+			for($var.objectType$ item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -536,7 +547,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.className$ of(Collection<? extends $var.objectType$> values, int size) {
+	public static final $var.className$ of(Iterable<? extends $var.objectType$> values, int size) {
 		$var.className$ inst = newListOfDefaultValues(size);
 		$var.type$[] dat = inst.data;
 		int i = 0;
@@ -587,7 +598,7 @@ public class $var.className$ implements $var.implementClassNames:{x | $x$, }; se
 	}
 
 
-	public static final $var.type$[] toArray(Collection<? extends $var.objectType$> values, int size) {
+	public static final $var.type$[] toArray(Iterable<? extends $var.objectType$> values, int size) {
 		$var.type$[] dst = new $var.type$[size];
 		int i = 0;
 		for($var.objectType$ value : values) {

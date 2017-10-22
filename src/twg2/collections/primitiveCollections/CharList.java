@@ -34,10 +34,10 @@ public interface CharList extends RandomAccess, CharListReadOnly {
 	public void addAll(CharList coll);
 
 
-	/** Add a collection of {@link CharList} values to this collection
+	/** Add an iterable of {@link Character} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends Character> coll);
+	public boolean addValues(Iterable<? extends Character> coll);
 
 
 	/** Add the specified array of items to this collection

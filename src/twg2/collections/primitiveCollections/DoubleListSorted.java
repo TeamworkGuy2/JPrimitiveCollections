@@ -256,12 +256,12 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
-	/** Add a {@link Collection} of {@link Double} objects to this group of elements
+	/** Add an {@link Iterable} of {@link Double} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Double> items) {
+	public boolean addValues(Iterable<? extends Double> items) {
 		boolean res = true;
 		for(Double item : items) {
 			if(item != null) {
@@ -443,7 +443,7 @@ public class DoubleListSorted implements DoubleList, RandomAccess, Iterable<Doub
 	}
 
 
-	public static final DoubleListSorted of(Collection<? extends Double> values, int size) {
+	public static final DoubleListSorted of(Iterable<? extends Double> values, int size) {
 		DoubleListSorted inst = new DoubleListSorted(size);
 		for(Double value : values) {
 			inst.add(value);

@@ -34,10 +34,10 @@ public interface LongList extends RandomAccess, LongListReadOnly {
 	public void addAll(LongList coll);
 
 
-	/** Add a collection of {@link LongList} values to this collection
+	/** Add an iterable of {@link Long} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends Long> coll);
+	public boolean addValues(Iterable<? extends Long> coll);
 
 
 	/** Add the specified array of items to this collection

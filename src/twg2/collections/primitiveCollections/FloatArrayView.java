@@ -384,7 +384,7 @@ public final class FloatArrayView implements FloatList, java.util.RandomAccess, 
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Float> coll) {
+	public boolean addValues(Iterable<? extends Float> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 

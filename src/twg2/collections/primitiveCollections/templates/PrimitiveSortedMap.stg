@@ -2,7 +2,6 @@ PrimitiveSortedMap(var) ::= <<
 package $var.packageName$;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
@@ -312,12 +311,12 @@ public class $var.className$<$var.valueTypeSignature$> implements $var.implement
 	}
 
 
-	public final void putAll(Collection<? extends $var.objectType$> keys, Collection<? extends $var.valueType$> values) {
+	public final void putAll(Iterable<? extends $var.objectType$> keys, Iterable<? extends $var.valueType$> values) {
 		putAll(keys, values, false, true);
 	}
 
 
-	public final void putAll(Collection<? extends $var.objectType$> keys, Collection<? extends $var.valueType$> values,
+	public final void putAll(Iterable<? extends $var.objectType$> keys, Iterable<? extends $var.valueType$> values,
 			boolean allowDuplicateKeys, boolean requireEqualSize) {
 		Iterator<? extends $var.objectType$> keyIter = keys.iterator();
 		Iterator<? extends $var.valueType$> valueIter = values.iterator();

@@ -317,27 +317,38 @@ public class FloatArrayList implements FloatList, RandomAccess, Iterable<Float> 
 	}
 
 
-	/** Add a {@link Collection} of {@link Float} objects to this list
+	/** Add an {@link Iterable} of {@link Float} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Float> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends Float> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof FloatList) {
+				addAll((FloatList)items);
+				return true;
+			}
+			for(Float item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends Float> coll = (Collection<? extends Float>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends Float> itemsList = (List<? extends Float>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends Float> itemsList = (List<? extends Float>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for(Float item : items) {
+			for(Float item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -535,7 +546,7 @@ public class FloatArrayList implements FloatList, RandomAccess, Iterable<Float> 
 	}
 
 
-	public static final FloatArrayList of(Collection<? extends Float> values, int size) {
+	public static final FloatArrayList of(Iterable<? extends Float> values, int size) {
 		FloatArrayList inst = newListOfDefaultValues(size);
 		float[] dat = inst.data;
 		int i = 0;
@@ -586,7 +597,7 @@ public class FloatArrayList implements FloatList, RandomAccess, Iterable<Float> 
 	}
 
 
-	public static final float[] toArray(Collection<? extends Float> values, int size) {
+	public static final float[] toArray(Iterable<? extends Float> values, int size) {
 		float[] dst = new float[size];
 		int i = 0;
 		for(Float value : values) {

@@ -384,7 +384,7 @@ public final class DoubleArrayView implements DoubleList, java.util.RandomAccess
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Double> coll) {
+	public boolean addValues(Iterable<? extends Double> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 

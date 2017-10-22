@@ -18,36 +18,47 @@ import twg2.collections.primitiveCollections.IntListSorted;
  * @since 2015-0-0
  */
 public class PrimitiveListAndBagTest {
-	private List<Map.Entry<String, int[]>> intGroups = new ArrayList<>();
-	private List<Map.Entry<String, String>> strStrs = new ArrayList<>();
-	private List<String> properties = new ArrayList<String>();
-	private IntArrayList ints = new IntArrayList();
 
 
 	@Test
 	public void testListAndBag() {
+		IntArrayList ints = new IntArrayList();
 		IntListSorted intsSorted = new IntListSorted();
+		ArrayList<Integer> intsColl = new ArrayList<>();
+
 		Random rand = new Random();
+		List<Map.Entry<String, int[]>> intGroups = new ArrayList<>();
 		intGroups.add(entry("alpha", randomInts(rand, 10)));
 		intGroups.add(entry("beta", randomInts(rand, 10)));
 		intGroups.add(entry("gamma", randomInts(rand, 10)));
 		intGroups.add(entry("delta", randomInts(rand, 10)));
 
-		StringBuilder strB = new StringBuilder();
-
 		for(int i = 0, size = intGroups.size(); i < size; i++) {
-			strStrs.add(entry(intGroups.get(i).getKey(), strB.append(intGroups.get(i).getKey()).reverse().toString()));
-			strB.setLength(0);
-			properties.add(intGroups.get(i).getKey());
 			int[] intAry = intGroups.get(i).getValue();
 			ints.addAll(intAry);
 			intsSorted.addAll(intAry);
 
+			// toArray()
+			intAry = ints.toArray();
 			Arrays.sort(intAry);
-			Assert.assertArrayEquals(intsSorted.toArray(), intAry);
+			Assert.assertArrayEquals(intAry, intsSorted.toArray());
+
+			// addToCollection(), toList()
+			ints.addToCollection(intsColl);
+			Assert.assertArrayEquals(ints.toList().toArray(new Integer[0]), intsColl.toArray(new Integer[0]));
+
+			// contains()
+			Assert.assertTrue(ints.contains(intAry[0]));
+			Assert.assertTrue(intsSorted.contains(intAry[0]));
 
 			ints.clear();
 			intsSorted.clear();
+			intsColl.clear();
+
+			Assert.assertTrue(ints.isEmpty());
+			Assert.assertTrue(intsSorted.isEmpty());
+			Assert.assertEquals(0, ints.size());
+			Assert.assertEquals(0, intsSorted.size());
 		}
 	}
 

@@ -1,6 +1,7 @@
 package twg2.collections.primitiveCollections.test;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -282,6 +283,36 @@ public class PrimitiveCollectionTest {
 	}
 
 
+	@Test
+	public void testAddValues() {
+		IntArrayList aryList1 = IntArrayList.of(3, 4, 5);
+		IntArrayList aryList2 = IntArrayList.of(1, 2);
+		IntListSorted sortedList1 = IntListSorted.of(8, 9);
+		IntListSorted sortedList2 = IntListSorted.of(10);
+		IntList tmp = null;
+
+		tmp = aryList1.copy();
+		tmp.addValues(sortedList2);
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), sortedList2.toArray()));
+
+		tmp = aryList1.copy();
+		tmp.addValues(aryList2);
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), aryList2.toArray()));
+
+		tmp = sortedList2.copy();
+		tmp.addValues(sortedList1.toList());
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList2.toArray(), sortedList1.toArray()));
+
+		tmp = sortedList1.copy();
+		tmp.addValues(new Iterable<Integer>() {
+			@Override public Iterator<Integer> iterator() {
+				return aryList2.iterator();
+			}
+		});
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList1.toArray(), aryList2.toArray()));
+	}
+
+
 	public void testIntListDefault(IntArrayList list) {
 		int[] items = new int[] {5, 9, 12, 8, 4, 3, 2, 1, 6};
 
@@ -352,7 +383,6 @@ public class PrimitiveCollectionTest {
 	}
 
 
-	// copy from JCollectionUtil
 	private static final int[] concatCopy(int[] a, int[] b) {
 		int[] r = Arrays.copyOf(a, a.length + b.length);
 		System.arraycopy(b, 0, r, a.length, b.length);

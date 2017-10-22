@@ -317,27 +317,38 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	/** Add a {@link Collection} of {@link Double} objects to this list
+	/** Add an {@link Iterable} of {@link Double} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Double> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends Double> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof DoubleList) {
+				addAll((DoubleList)items);
+				return true;
+			}
+			for(Double item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends Double> coll = (Collection<? extends Double>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends Double> itemsList = (List<? extends Double>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends Double> itemsList = (List<? extends Double>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for(Double item : items) {
+			for(Double item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -535,7 +546,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public static final DoubleArrayList of(Collection<? extends Double> values, int size) {
+	public static final DoubleArrayList of(Iterable<? extends Double> values, int size) {
 		DoubleArrayList inst = newListOfDefaultValues(size);
 		double[] dat = inst.data;
 		int i = 0;
@@ -586,7 +597,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
-	public static final double[] toArray(Collection<? extends Double> values, int size) {
+	public static final double[] toArray(Iterable<? extends Double> values, int size) {
 		double[] dst = new double[size];
 		int i = 0;
 		for(Double value : values) {

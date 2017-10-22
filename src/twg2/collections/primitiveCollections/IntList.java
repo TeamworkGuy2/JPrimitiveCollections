@@ -34,10 +34,10 @@ public interface IntList extends RandomAccess, IntListReadOnly {
 	public void addAll(IntList coll);
 
 
-	/** Add a collection of {@link IntList} values to this collection
+	/** Add an iterable of {@link Integer} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends Integer> coll);
+	public boolean addValues(Iterable<? extends Integer> coll);
 
 
 	/** Add the specified array of items to this collection

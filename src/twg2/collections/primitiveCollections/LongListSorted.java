@@ -256,12 +256,12 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	/** Add a {@link Collection} of {@link Long} objects to this group of elements
+	/** Add an {@link Iterable} of {@link Long} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Long> items) {
+	public boolean addValues(Iterable<? extends Long> items) {
 		boolean res = true;
 		for(Long item : items) {
 			if(item != null) {
@@ -443,7 +443,7 @@ public class LongListSorted implements LongList, RandomAccess, Iterable<Long> {
 	}
 
 
-	public static final LongListSorted of(Collection<? extends Long> values, int size) {
+	public static final LongListSorted of(Iterable<? extends Long> values, int size) {
 		LongListSorted inst = new LongListSorted(size);
 		for(Long value : values) {
 			inst.add(value);

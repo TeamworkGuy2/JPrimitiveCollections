@@ -34,10 +34,10 @@ public interface DoubleList extends RandomAccess, DoubleListReadOnly {
 	public void addAll(DoubleList coll);
 
 
-	/** Add a collection of {@link DoubleList} values to this collection
+	/** Add an iterable of {@link Double} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends Double> coll);
+	public boolean addValues(Iterable<? extends Double> coll);
 
 
 	/** Add the specified array of items to this collection

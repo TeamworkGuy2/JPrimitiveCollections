@@ -384,7 +384,7 @@ public final class IntArrayView implements IntList, java.util.RandomAccess, Iter
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Integer> coll) {
+	public boolean addValues(Iterable<? extends Integer> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 

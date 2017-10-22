@@ -34,10 +34,10 @@ public interface FloatList extends RandomAccess, FloatListReadOnly {
 	public void addAll(FloatList coll);
 
 
-	/** Add a collection of {@link FloatList} values to this collection
+	/** Add an iterable of {@link Float} values to this collection
 	 * @param coll the values to add to this collection
 	 */
-	public boolean addAll(Collection<? extends Float> coll);
+	public boolean addValues(Iterable<? extends Float> coll);
 
 
 	/** Add the specified array of items to this collection

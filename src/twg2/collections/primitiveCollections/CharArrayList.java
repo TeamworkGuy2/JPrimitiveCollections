@@ -317,27 +317,38 @@ public class CharArrayList implements CharList, RandomAccess, Iterable<Character
 	}
 
 
-	/** Add a {@link Collection} of {@link Character} objects to this list
+	/** Add an {@link Iterable} of {@link Character} objects to this list
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Character> items) {
-		int len = items.size();
+	public boolean addValues(Iterable<? extends Character> items) {
+		if(!(items instanceof Collection)) {
+			if(items instanceof CharList) {
+				addAll((CharList)items);
+				return true;
+			}
+			for(Character item : items) {
+				add(item);
+			}
+			return true;
+		}
+		Collection<? extends Character> coll = (Collection<? extends Character>)items;
+		int len = coll.size();
 		if(size + len > data.length) {
 			expandList(size + len);
 		}
 		mod++;
 		// Add the new items, skip creating an iterator if the collection is a random access list, just use get(int)
-		if(items instanceof List && items instanceof RandomAccess) {
-			List<? extends Character> itemsList = (List<? extends Character>)items;
+		if(coll instanceof List && coll instanceof RandomAccess) {
+			List<? extends Character> itemsList = (List<? extends Character>)coll;
 			for(int i = 0; i < len; i++) {
 				data[size + i] = itemsList.get(i);
 			}
 		}
 		else {
 			int i = 0;
-			for(Character item : items) {
+			for(Character item : coll) {
 				data[size + i] = item;
 				i++;
 			}
@@ -535,7 +546,7 @@ public class CharArrayList implements CharList, RandomAccess, Iterable<Character
 	}
 
 
-	public static final CharArrayList of(Collection<? extends Character> values, int size) {
+	public static final CharArrayList of(Iterable<? extends Character> values, int size) {
 		CharArrayList inst = newListOfDefaultValues(size);
 		char[] dat = inst.data;
 		int i = 0;
@@ -586,7 +597,7 @@ public class CharArrayList implements CharList, RandomAccess, Iterable<Character
 	}
 
 
-	public static final char[] toArray(Collection<? extends Character> values, int size) {
+	public static final char[] toArray(Iterable<? extends Character> values, int size) {
 		char[] dst = new char[size];
 		int i = 0;
 		for(Character value : values) {

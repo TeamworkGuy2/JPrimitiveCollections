@@ -256,12 +256,12 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	/** Add a {@link Collection} of {@link Float} objects to this group of elements
+	/** Add an {@link Iterable} of {@link Float} objects to this group of elements
 	 * @param items the collection of items
-	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the collection where null)
+	 * @return true if all the items are added successfully, false some items were not added (for example, if some of the values in the iterable where null)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Float> items) {
+	public boolean addValues(Iterable<? extends Float> items) {
 		boolean res = true;
 		for(Float item : items) {
 			if(item != null) {
@@ -443,7 +443,7 @@ public class FloatListSorted implements FloatList, RandomAccess, Iterable<Float>
 	}
 
 
-	public static final FloatListSorted of(Collection<? extends Float> values, int size) {
+	public static final FloatListSorted of(Iterable<? extends Float> values, int size) {
 		FloatListSorted inst = new FloatListSorted(size);
 		for(Float value : values) {
 			inst.add(value);

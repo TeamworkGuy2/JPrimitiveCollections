@@ -384,7 +384,7 @@ public final class LongArrayView implements LongList, java.util.RandomAccess, It
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends Long> coll) {
+	public boolean addValues(Iterable<? extends Long> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 

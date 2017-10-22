@@ -385,7 +385,7 @@ public final class $var.className$ implements $var.implementClassNames:{x | $x$}
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public boolean addAll(Collection<? extends $var.objectType$> coll) {
+	public boolean addValues(Iterable<? extends $var.objectType$> coll) {
 		throw new UnsupportedOperationException("cannot modify immutable view");
 	}
 
