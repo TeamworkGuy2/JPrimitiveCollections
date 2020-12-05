@@ -1,6 +1,5 @@
 JPrimitiveCollections
 ==============
-version: 0.3.0
 
 Primitive data collections (char, int, float, long, double), including:
 * array lists - primitive list API mirroring java.util.List
@@ -11,6 +10,6 @@ Primitive data collections (char, int, float, long, double), including:
 * iterators - with primitive and boxed wrapper versions
 * read only interfaces - e.g. IntListReadOnly with `average()`, `get(int)`, toArray()`, and `toList()`.  Or `IntSearchable` with `contains(int)`, `indexOf(int)`, `lastIndexOf(int)`, and `size()`.
 
-The primary purpose of these collections are to provide performance improvements over equivalent java collections such as HashMap and ArrayList.
+The primary purpose of these collections are to provide performance improvements over equivalent Java collections such as HashMap and ArrayList.
 
 Take a look at the 'test' package for some examples of how the API works.

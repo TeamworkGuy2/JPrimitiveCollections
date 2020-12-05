@@ -1,7 +1,9 @@
 package twg2.collections.primitiveCollections.test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +27,6 @@ import twg2.collections.primitiveCollections.IntMapSorted;
  * @since 2014-12-26
  */
 public class PrimitiveCollectionTest {
-
 
 	@Test
 	public void primitiveArrayListTest() {
@@ -184,14 +185,7 @@ public class PrimitiveCollectionTest {
 
 
 	@Test
-	public void testIntList() {
-		testIntListDefault(new IntArrayList(8));
-		testIntListSorted(new IntListSorted(8));
-	}
-
-
-	@Test
-	public void testSortedMap() {
+	public void sortedMapTest() {
 		{
 			CharMapSorted<String> cMap = new CharMapSorted<String>();
 
@@ -258,7 +252,7 @@ public class PrimitiveCollectionTest {
 
 
 	@Test
-	public void testAddAll() {
+	public void addAll() {
 		IntArrayList aryList1 = IntArrayList.of(3, 4, 5);
 		IntArrayList aryList2 = IntArrayList.of(1, 2);
 		IntListSorted sortedList1 = IntListSorted.of(8, 9);
@@ -267,90 +261,88 @@ public class PrimitiveCollectionTest {
 
 		tmp = aryList1.copy();
 		tmp.addAll(sortedList2);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), sortedList2.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1, sortedList2));
 
 		tmp = aryList1.copy();
 		tmp.addAll(aryList2);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), aryList2.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1, aryList2));
 
 		tmp = sortedList2.copy();
 		tmp.addAll(sortedList1);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList2.toArray(), sortedList1.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList2, sortedList1));
 
 		tmp = sortedList1.copy();
 		tmp.addAll(aryList2);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList1.toArray(), aryList2.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList1, aryList2));
 	}
 
 
 	@Test
-	public void testAddValues() {
-		IntArrayList aryList1 = IntArrayList.of(3, 4, 5);
+	public void addValues() {
+		addValuesTest(IntArrayList.of(3, 4, 5));
+		addValuesTest(IntListSorted.of(3, 4, 5));
+	}
+
+
+	public void addValuesTest(IntList list1) {
 		IntArrayList aryList2 = IntArrayList.of(1, 2);
 		IntListSorted sortedList1 = IntListSorted.of(8, 9);
 		IntListSorted sortedList2 = IntListSorted.of(10);
+		Collection<Integer> col1 = new LinkedList<Integer>();
+		col1.add(8);
+		col1.add(9);
 		IntList tmp = null;
 
-		tmp = aryList1.copy();
-		tmp.addValues(sortedList2);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), sortedList2.toArray()));
+		tmp = list1.copy();
+		tmp.addValues(sortedList1);
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(list1, sortedList1));
 
-		tmp = aryList1.copy();
+		tmp = list1.copy();
 		tmp.addValues(aryList2);
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(aryList1.toArray(), aryList2.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(list1, aryList2));
 
-		tmp = sortedList2.copy();
-		tmp.addValues(sortedList1.toList());
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList2.toArray(), sortedList1.toArray()));
+		tmp = list1.copy();
+		tmp.addValues(sortedList2.toList());
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(list1, sortedList2));
 
-		tmp = sortedList1.copy();
+		tmp = list1.copy();
 		tmp.addValues(new Iterable<Integer>() {
 			@Override public Iterator<Integer> iterator() {
 				return aryList2.iterator();
 			}
 		});
-		assertArrayLooseEqual(tmp.toArray(), concatCopy(sortedList1.toArray(), aryList2.toArray()));
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(list1, aryList2));
+
+		tmp = list1.copy();
+		tmp.addValues(col1);
+		assertArrayLooseEqual(tmp.toArray(), concatCopy(list1, IntArrayList.of(col1)));
 	}
 
 
-	public void testIntListDefault(IntArrayList list) {
-		int[] items = new int[] {5, 9, 12, 8, 4, 3, 2, 1, 6};
-
-		list.add(items[0]);
-		list.add(items[1]);
-		list.add(items[2]);
-		Assert.assertTrue(list.remove(1) == 9);
-		Assert.assertTrue(list.remove(1) == 12);
-		Assert.assertTrue(list.removeValue(5) == true);
-		Assert.assertTrue(list.size() == 0);
-
-		list.add(items[3]);
-		list.add(items[4]);
-		list.add(items[5]);
-		int temp = list.get(list.size()-1);
-		list.add(0, 567);
-		list.add(0, 765);
-		Assert.assertTrue(list.get(0) == 765 && list.get(1) == 567 && temp == list.get(list.size() - 1));
-
-		list.remove(1);
-		list.remove(0);
-		Assert.assertTrue(list.removeValue(items[3]) == true);
-		Assert.assertTrue(list.removeValue(items[4]) == true);
-		Assert.assertTrue(list.size() == 1);
-		Assert.assertTrue(list.get(0) == 3);
-
-		list.add(items[6]);
-		list.add(items[7]);
-		list.add(items[8]);
-		Assert.assertTrue(list.removeValue(1) == true);
-
-		list.clear();
-		list.addAll(items, 0, items.length);
-		Assert.assertTrue(list.size() == items.length);
+	@Test
+	public void pop() {
+		popTest(IntArrayList.of(40, 41, 42));
+		popTest(IntBag.of(40, 41, 42));
 	}
 
 
-	public void testIntListSorted(IntListSorted list) {
+	public void popTest(IntArrayList list) {
+		Assert.assertEquals(42, list.pop());
+		Assert.assertEquals(2, list.size());
+
+		list.set(1, 99);
+		Assert.assertEquals(99, list.pop());
+		Assert.assertEquals(40, list.pop());
+		Assert.assertEquals(0, list.size());
+		assertException(() -> list.pop());
+		assertException(() -> list.getLast());
+		assertException(() -> list.set(0, 99));
+	}
+
+
+	@Test
+	public void intArrayListTest() {
+		IntArrayList list = new IntArrayList(8);
 		int[] items = new int[] {5, 9, 12, 3, 4, 3, 2, 1, 6};
 
 		list.add(items[0]);
@@ -358,21 +350,65 @@ public class PrimitiveCollectionTest {
 		list.add(items[2]);
 		Assert.assertTrue(list.remove(1) == 9);
 		Assert.assertTrue(list.remove(1) == 12);
-		Assert.assertTrue(list.removeValue(5) == true);
+		Assert.assertTrue(list.removeValue(5));
 		Assert.assertTrue(list.size() == 0);
 
 		list.add(items[3]);
 		list.add(items[4]);
 		list.add(items[5]);
-		Assert.assertTrue(list.removeValue(items[3]) == true);
-		Assert.assertTrue(list.removeValue(items[4]) == true);
+		Assert.assertEquals(0, list.indexOf(3));
+		Assert.assertEquals(2, list.indexOf(3, 2));
+		Assert.assertEquals(2, list.lastIndexOf(3));
+		int temp = list.get(list.size() - 1);
+		list.add(0, 567);
+		list.add(0, 765);
+		Assert.assertTrue(list.get(0) == 765 && list.get(1) == 567 && temp == list.get(list.size() - 1));
+
+		list.remove(1);
+		list.remove(0);
+		Assert.assertTrue(list.removeValue(items[3]));
+		Assert.assertTrue(list.removeValue(items[4]));
 		Assert.assertTrue(list.size() == 1);
 		Assert.assertTrue(list.get(0) == 3);
 
 		list.add(items[6]);
 		list.add(items[7]);
 		list.add(items[8]);
-		Assert.assertTrue(list.removeValue(1) == true);
+		Assert.assertTrue(list.removeValue(1));
+
+		list.clear();
+		list.addAll(items, 0, items.length);
+		Assert.assertEquals(items.length, list.size());
+	}
+
+
+	@Test
+	public void intListSortedTest() {
+		IntListSorted list = new IntListSorted(8);
+		int[] items = new int[] {5, 9, 12, 3, 4, 3, 2, 1, 6};
+
+		list.add(items[0]);
+		list.add(items[1]);
+		list.add(items[2]);
+		Assert.assertTrue(list.remove(1) == 9);
+		Assert.assertTrue(list.remove(1) == 12);
+		Assert.assertTrue(list.removeValue(5));
+		Assert.assertTrue(list.size() == 0);
+
+		list.add(items[3]);
+		list.add(items[4]);
+		list.add(items[5]);
+		Assert.assertEquals(0, list.indexOf(3));
+		Assert.assertEquals(1, list.lastIndexOf(3));
+		Assert.assertTrue(list.removeValue(items[3]));
+		Assert.assertTrue(list.removeValue(items[4]));
+		Assert.assertTrue(list.size() == 1);
+		Assert.assertTrue(list.get(0) == 3);
+
+		list.add(items[6]);
+		list.add(items[7]);
+		list.add(items[8]);
+		Assert.assertTrue(list.removeValue(1));
 	}
 
 
@@ -383,10 +419,34 @@ public class PrimitiveCollectionTest {
 	}
 
 
-	private static final int[] concatCopy(int[] a, int[] b) {
-		int[] r = Arrays.copyOf(a, a.length + b.length);
-		System.arraycopy(b, 0, r, a.length, b.length);
+	private static int[] concatCopy(IntList a, IntList b) {
+		int[] r = Arrays.copyOf(a.toArray(), a.size() + b.size());
+		System.arraycopy(b.toArray(), 0, r, a.size(), b.size());
 		return r;
+	}
+
+
+	/** Assert that the task throws an {@link Exception}
+	 * @param task the action to perform
+	 */
+	public static void assertException(Runnable task) {
+		assertException(null, task);
+	}
+
+
+	/** Assert that the task throws an {@link Exception}
+	 * @param errMsg a message to include with the assertion
+	 * @param task the action to perform
+	 */
+	public static void assertException(String errMsg, Runnable task) {
+		Throwable error = null;
+		try {
+			task.run();
+		} catch(Exception e) {
+			error = e;
+		} finally {
+			Assert.assertTrue("task " + (errMsg != null ? "'" + errMsg + "' " : "") + "was expected to throw exception but did not", error != null);
+		}
 	}
 
 }

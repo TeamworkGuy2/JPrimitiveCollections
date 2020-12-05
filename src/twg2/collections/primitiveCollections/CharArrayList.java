@@ -399,6 +399,20 @@ public class CharArrayList implements CharList, RandomAccess, Iterable<Character
 	}
 
 
+	/** Remove and return the last char from this list
+	 * @return the last element from this list
+	 */
+	public char pop() {
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
+		char item = data[size - 1];
+		mod++;
+		size -= 1;
+		return item;	
+	}
+
+
 	/**
 	 * @return the current size of this list
 	 */

@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.0](N/A) - 2017-10-22
+### [0.3.1](N/A) - 2020-12-05
+#### Added
+* Added `*ArrayList.pop()`
+* Improved unit tests
+
+
+--------
+### [0.3.0](https://github.com/TeamworkGuy2/JPrimitiveCollections/commit/61a6032bbdf3f167000489e8e1a40b79ad8b3de3) - 2017-10-22
 #### Changed
 * `*List` `addAll(Collection)` renamed/changed to `addValues(Iterable)` for ease of use and renamed to avoid ambigious method definition with `addAll(*List)` (i.e. `IntList`)
 * `*ArrayList` static methods `of(Collection, int)` and `toArray(Collection, int)` first parameter changed to `Iterable` for ease of use

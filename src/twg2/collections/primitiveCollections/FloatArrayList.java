@@ -399,6 +399,20 @@ public class FloatArrayList implements FloatList, RandomAccess, Iterable<Float> 
 	}
 
 
+	/** Remove and return the last float from this list
+	 * @return the last element from this list
+	 */
+	public float pop() {
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
+		float item = data[size - 1];
+		mod++;
+		size -= 1;
+		return item;	
+	}
+
+
 	/**
 	 * @return the current size of this list
 	 */

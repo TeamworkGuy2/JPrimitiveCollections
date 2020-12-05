@@ -399,6 +399,20 @@ public class IntArrayList implements IntList, RandomAccess, Iterable<Integer> {
 	}
 
 
+	/** Remove and return the last int from this list
+	 * @return the last element from this list
+	 */
+	public int pop() {
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
+		int item = data[size - 1];
+		mod++;
+		size -= 1;
+		return item;	
+	}
+
+
 	/**
 	 * @return the current size of this list
 	 */

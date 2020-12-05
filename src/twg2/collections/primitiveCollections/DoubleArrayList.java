@@ -399,6 +399,20 @@ public class DoubleArrayList implements DoubleList, RandomAccess, Iterable<Doubl
 	}
 
 
+	/** Remove and return the last double from this list
+	 * @return the last element from this list
+	 */
+	public double pop() {
+		if(size < 1) {
+			throw new ArrayIndexOutOfBoundsException((size - 1) + " of [0, " + size + ")");
+		}
+		double item = data[size - 1];
+		mod++;
+		size -= 1;
+		return item;	
+	}
+
+
 	/**
 	 * @return the current size of this list
 	 */
